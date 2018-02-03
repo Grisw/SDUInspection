@@ -1,0 +1,47 @@
+<com.zhy.android.percent.support.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/splash"
+    android:id="@+id/fullscreen_content"
+    tools:context="pers.lxt.sduinspection.SplashActivity">
+
+    <ImageView
+        android:id="@+id/logo_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_heightPercent="25%w"
+        app:layout_widthPercent="25%w"
+        android:elevation="5dp"
+        android:src="@drawable/ic_launcher_round"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/imageDescription"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:layout_below="@id/logo_image"
+        android:layout_centerHorizontal="true"
+        android:textSize="22sp"
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:elevation="5dp"/>
+
+    <Button
+        android:id="@+id/usePhone_button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:elevation="5dp"
+        android:text="@string/splash_usePhone_button"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        app:layout_heightPercent="14%w"
+        app:layout_widthPercent="78%w"
+        app:layout_marginBottomPercent="5%h"/>
+
+</com.zhy.android.percent.support.PercentRelativeLayout>
