@@ -1,13 +1,27 @@
-package pers.lxt.sduinspection;
+package pers.lxt.sduinspection.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import pers.lxt.sduinspection.R;
 
 /**
  * Splash界面
@@ -17,7 +31,7 @@ public class SplashActivity extends AppCompatActivity {
     /**
      * 在初始化完成前提下，进入主界面最小等待时间。
      */
-    private static final int MIN_DELAY = 3000;
+    private static final int MIN_DELAY = 2000;
 
     /**
      * Some older devices needs a small delay between UI widget updates
@@ -25,7 +39,11 @@ public class SplashActivity extends AppCompatActivity {
      */
     private static final int UI_ANIMATION_DELAY = 300;
 
-    private final Handler mHideHandler = new Handler();
+    private Button usePhoneButton;
+    private ImageView loginImage;
+    private TextView logoTextText;
+
+    private final Handler mDelayHandler = new Handler();
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -42,13 +60,9 @@ public class SplashActivity extends AppCompatActivity {
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        }
-    };
 
-    private final Runnable mShowPart2Runnable = new Runnable() {
-        @Override
-        public void run() {
-            //mControlsView.setVisibility(View.VISIBLE);
+            //延迟启动下一界面
+            delayCallNextScene();
         }
     };
 
@@ -56,6 +70,17 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         public void run() {
             hide();
+        }
+    };
+
+    private final Runnable mCallNextSceneRunnable = new Runnable() {
+        @Override
+        public void run() {
+            //显示状态栏、导航栏
+            show();
+
+            //显示登录按钮
+            showLoginView();
         }
     };
 
@@ -71,11 +96,18 @@ public class SplashActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.TRANSPARENT);
         window.setNavigationBarColor(Color.TRANSPARENT);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+        //获取View
+        usePhoneButton = findViewById(R.id.usePhone_button);
+        usePhoneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+            }
+        });
+
+        loginImage = findViewById(R.id.logo_image);
+        logoTextText = findViewById(R.id.logo_text);
 
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
@@ -85,8 +117,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void hide() {
         // Schedule a runnable to remove the status and navigation bar after a delay
-        mHideHandler.removeCallbacks(mShowPart2Runnable);
-        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
+        mDelayHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
     }
 
     @SuppressLint("InlinedApi")
@@ -95,9 +126,8 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
 
-        // Schedule a runnable to display UI elements after a delay
-        mHideHandler.removeCallbacks(mHidePart2Runnable);
-        mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
+        //防止反复调用
+        mDelayHandler.removeCallbacks(mHidePart2Runnable);
     }
 
     /**
@@ -105,7 +135,25 @@ public class SplashActivity extends AppCompatActivity {
      * previously scheduled calls.
      */
     private void delayedHide(int delayMillis) {
-        mHideHandler.removeCallbacks(mHideRunnable);
-        mHideHandler.postDelayed(mHideRunnable, delayMillis);
+        mDelayHandler.removeCallbacks(mHideRunnable);
+        mDelayHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    private void delayCallNextScene() {
+        mDelayHandler.removeCallbacks(mCallNextSceneRunnable);
+        mDelayHandler.postDelayed(mCallNextSceneRunnable, MIN_DELAY);
+    }
+
+    private void showLoginView() {
+        Animation splashLogoAnimation = AnimationUtils.loadAnimation(this, R.anim.splash_logo);
+        loginImage.startAnimation(splashLogoAnimation);
+        logoTextText.startAnimation(splashLogoAnimation);
+
+        Animator animator = ViewAnimationUtils.createCircularReveal(usePhoneButton, 0, 0, 0,
+                (float) Math.hypot(usePhoneButton.getWidth(), usePhoneButton.getHeight()));
+        animator.setDuration(600);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.start();
+        usePhoneButton.setVisibility(View.VISIBLE);
     }
 }

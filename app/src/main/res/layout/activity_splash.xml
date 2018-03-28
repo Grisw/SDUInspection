@@ -4,8 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/splash"
-    android:id="@+id/fullscreen_content"
-    tools:context="pers.lxt.sduinspection.SplashActivity">
+    tools:context="pers.lxt.sduinspection.activity.SplashActivity">
+
+    <View
+        android:id="@+id/_center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true"/>
 
     <ImageView
         android:id="@+id/logo_image"
@@ -15,14 +20,16 @@
         app:layout_widthPercent="25%w"
         android:elevation="5dp"
         android:src="@drawable/ic_launcher_round"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/_center"
         android:contentDescription="@string/imageDescription"/>
 
     <TextView
+        android:id="@+id/logo_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app_name"
-        android:layout_below="@id/logo_image"
+        android:layout_below="@id/_center"
         android:layout_centerHorizontal="true"
         android:textSize="22sp"
         android:layout_marginTop="8dp"
@@ -32,16 +39,14 @@
 
     <Button
         android:id="@+id/usePhone_button"
+        android:visibility="invisible"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:elevation="5dp"
         android:text="@string/splash_usePhone_button"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
         app:layout_heightPercent="14%w"
         app:layout_widthPercent="78%w"
-        app:layout_marginBottomPercent="5%h"/>
+        app:layout_marginBottomPercent="10%h"/>
 
 </com.zhy.android.percent.support.PercentRelativeLayout>
