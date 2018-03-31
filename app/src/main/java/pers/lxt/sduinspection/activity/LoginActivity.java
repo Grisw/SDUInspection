@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,9 +18,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONException;
+
 import java.lang.ref.WeakReference;
 
 import pers.lxt.sduinspection.R;
+import pers.lxt.sduinspection.model.Response;
+import pers.lxt.sduinspection.model.ServiceException;
+import pers.lxt.sduinspection.service.TokenService;
+import pers.lxt.sduinspection.util.ResponseCode;
 
 /**
  * A login screen that offers login via phone/password.
@@ -110,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
             focusView = mPhoneView;
             cancel = true;
         } else if (!isPhoneValid(phone)) {
-            mPhoneView.setError(getString(R.string.error_invalid_email));
+            mPhoneView.setError(getString(R.string.error_invalid_phone));
             focusView = mPhoneView;
             cancel = true;
         }
@@ -166,35 +173,42 @@ public class LoginActivity extends AppCompatActivity {
      * Represents an asynchronous login task used to authenticate
      * the user.
      */
-    public static class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public static class UserLoginTask extends AsyncTask<Void, Void, Response<String>> {
 
         private WeakReference<LoginActivity> loginActivityReference;
 
-        private final String mEmail;
+        private final String mPhone;
         private final String mPassword;
 
-        UserLoginTask(String email, String password, LoginActivity loginActivity) {
-            mEmail = email;
+        UserLoginTask(String phone, String password, LoginActivity loginActivity) {
+            mPhone = phone;
             mPassword = password;
             this.loginActivityReference = new WeakReference<>(loginActivity);
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+        protected Response<String> doInBackground(Void... params) {
+            LoginActivity activity = loginActivityReference.get();
+
+            if(activity == null || activity.isFinishing()) return null;
 
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+                return TokenService.getInstance(activity).requestToken(mPhone, mPassword);
+            } catch (InterruptedException ignored) {
+                return null;
+            } catch (JSONException e) {
+                Log.e(TokenService.class.getName(), e.getMessage(), e);
+                return new Response<>(e);
+            } catch (ServiceException e) {
+                Log.e(TokenService.class.getName(), e.getCause().getMessage(), e);
+                return new Response<>(e.getCause());
             }
-
-            return true;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(Response<String> response) {
+            if (response == null) return;
+
             LoginActivity activity = loginActivityReference.get();
 
             if(activity == null || activity.isFinishing()) return;
@@ -202,11 +216,23 @@ public class LoginActivity extends AppCompatActivity {
             activity.mAuthTask = null;
             activity.showProgress(false);
 
-            if (success) {
-                activity.finish();
+            if (response.getException() != null) {
+                Log.i("Test", "Hint error!");
             } else {
-                activity.mPasswordView.setError(activity.getString(R.string.error_incorrect_password));
-                activity.mPasswordView.requestFocus();
+                switch (response.getCode()){
+                    case ResponseCode.SUCCESS:
+                        Log.i("Test", "Login success!" + response.getObject());
+                        TokenService.getInstance(activity).setToken(response.getObject());
+                        break;
+                    case ResponseCode.WRONG_CREDENTIALS:
+                        activity.mPasswordView.setError(activity.getString(R.string.error_incorrect_password));
+                        activity.mPasswordView.requestFocus();
+                        break;
+                    default:
+                        Log.e(UserLoginTask.class.getName(),
+                                "Unknown code: " + response.getCode() + ", message: " + response.getMessage());
+                        break;
+                }
             }
         }
 
