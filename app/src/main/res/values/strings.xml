@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">移动巡检</string>
-
     <string name="imageDescription">Image</string>
-    <string name="splash_usePhone_button">使用手机号登录</string>
-    <string name="title_activity_login">登录</string>
 
-    <!-- Strings related to login -->
+    <!-- splash -->
+    <string name="splash_usePhone_button">使用手机号登录</string>
+
+    <!-- login -->
+    <string name="title_activity_login">登录</string>
     <string name="prompt_phone">手机号码</string>
     <string name="prompt_password">密码</string>
     <string name="action_sign_in">登录</string>
@@ -13,4 +14,11 @@
     <string name="error_invalid_password">密码长度太短</string>
     <string name="error_incorrect_password">密码错误或账户不存在</string>
     <string name="error_field_required">必填</string>
+    <string name="error_unknown">发生了未知的错误</string>
+
+    <!-- main -->
+    <string name="title_activity_main">移动巡检</string>
+    <string name="title_home">主页</string>
+    <string name="title_contacts">联系人</string>
+    <string name="title_me">我的</string>
 </resources>

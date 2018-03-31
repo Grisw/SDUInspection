@@ -3,6 +3,7 @@ package pers.lxt.sduinspection.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -27,6 +29,8 @@ import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.ServiceException;
 import pers.lxt.sduinspection.service.TokenService;
 import pers.lxt.sduinspection.util.ResponseCode;
+
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
 /**
  * A login screen that offers login via phone/password.
@@ -197,10 +201,10 @@ public class LoginActivity extends AppCompatActivity {
             } catch (InterruptedException ignored) {
                 return null;
             } catch (JSONException e) {
-                Log.e(TokenService.class.getName(), e.getMessage(), e);
+                Log.e(UserLoginTask.class.getName(), e.getMessage(), e);
                 return new Response<>(e);
             } catch (ServiceException e) {
-                Log.e(TokenService.class.getName(), e.getCause().getMessage(), e);
+                Log.e(UserLoginTask.class.getName(), e.getCause().getMessage(), e);
                 return new Response<>(e.getCause());
             }
         }
@@ -217,18 +221,22 @@ public class LoginActivity extends AppCompatActivity {
             activity.showProgress(false);
 
             if (response.getException() != null) {
-                Log.i("Test", "Hint error!");
+                Toast.makeText(activity, R.string.error_unknown, Toast.LENGTH_LONG).show();
             } else {
                 switch (response.getCode()){
                     case ResponseCode.SUCCESS:
-                        Log.i("Test", "Login success!" + response.getObject());
                         TokenService.getInstance(activity).setToken(response.getObject());
+                        TokenService.getInstance(activity).setPhone(mPhone);
+                        activity.startActivity(new Intent(activity, MainActivity.class));
+                        activity.setResult(RESULT_OK);
+                        activity.finish();
                         break;
                     case ResponseCode.WRONG_CREDENTIALS:
                         activity.mPasswordView.setError(activity.getString(R.string.error_incorrect_password));
                         activity.mPasswordView.requestFocus();
                         break;
                     default:
+                        Toast.makeText(activity, R.string.error_unknown, Toast.LENGTH_LONG).show();
                         Log.e(UserLoginTask.class.getName(),
                                 "Unknown code: " + response.getCode() + ", message: " + response.getMessage());
                         break;
