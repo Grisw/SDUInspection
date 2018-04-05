@@ -21,10 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-
 import java.lang.ref.WeakReference;
-import java.util.Date;
 
 import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.model.Response;
@@ -231,7 +228,7 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            mStartTime = new Date().getTime();
+            mStartTime = System.currentTimeMillis();
         }
 
         @Override
@@ -260,7 +257,7 @@ public class SplashActivity extends AppCompatActivity {
 
             activity.mCheckTask = null;
 
-            long left = (MIN_DELAY - new Date().getTime() + mStartTime);
+            long left = (MIN_DELAY - System.currentTimeMillis() + mStartTime);
             if(left < 0) left = 0;
 
             if (response.getException() != null) {
@@ -292,7 +289,7 @@ public class SplashActivity extends AppCompatActivity {
 
             activity.mCheckTask = null;
 
-            long left = (MIN_DELAY - new Date().getTime() + mStartTime);
+            long left = (MIN_DELAY - System.currentTimeMillis() + mStartTime);
             if(left < 0) left = 0;
 
             activity.delayCallNextScene(activity.mCallLoginSceneRunnable, left);

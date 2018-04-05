@@ -21,4 +21,11 @@
     <string name="title_home">主页</string>
     <string name="title_contacts">联系人</string>
     <string name="title_me">我的</string>
+    <string name="prompt_press_back">再按一次返回键退出</string>
+
+    <!-- vHome -->
+    <string name="prompt_executing">执行中</string>
+    <string name="prompt_waiting">待执行</string>
+    <string name="prompt_finished">已完成</string>
+    <string name="prompt_device">设备</string>
 </resources>

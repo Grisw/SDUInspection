@@ -225,8 +225,7 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 switch (response.getCode()){
                     case ResponseCode.SUCCESS:
-                        TokenService.getInstance(activity).setToken(response.getObject());
-                        TokenService.getInstance(activity).setPhone(mPhone);
+                        TokenService.getInstance(activity).setToken(mPhone, response.getObject());
                         activity.startActivity(new Intent(activity, MainActivity.class));
                         activity.setResult(RESULT_OK);
                         activity.finish();

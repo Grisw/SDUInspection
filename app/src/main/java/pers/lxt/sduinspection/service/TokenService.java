@@ -1,6 +1,7 @@
 package pers.lxt.sduinspection.service;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -32,12 +33,14 @@ public class TokenService {
     }
 
     private RequestQueue requestQueue;
+    private SharedPreferences sharedPreferences;
 
     private String phone;
     private String token;
 
     private TokenService(Context context){
         requestQueue = Volley.newRequestQueue(context);
+        sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
     }
 
     /**
@@ -166,19 +169,43 @@ public class TokenService {
         return response;
     }
 
+    /**
+     * Get registered token string.
+     * @return token string cached in local variables,
+     *         or read from SharedPreferences if local cache is null.
+     */
     public String getToken() {
+        if(token == null){
+            token = sharedPreferences.getString("token", null);
+        }
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
+    /**
+     * Save token with phone and token string.
+     * @param phone phone number.
+     * @param token token string.
+     */
+    public void setToken(String phone, String token) {
         this.phone = phone;
+        this.token = token;
+
+        // write SharedPreference
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("token", token);
+        editor.putString("phone", phone);
+        editor.apply();
+    }
+
+    /**
+     * Get registered phone number.
+     * @return phone number cached in local variables,
+     *         or read from SharedPreferences if local cache is null.
+     */
+    public String getPhone() {
+        if(phone == null){
+            phone = sharedPreferences.getString("phone", null);
+        }
+        return phone;
     }
 }

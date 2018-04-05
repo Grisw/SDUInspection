@@ -82,7 +82,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/D:/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/social/ic_person_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/D:/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/hardware/ic_device_hub_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -92,8 +92,11 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_me" />
+                            <entry key="height" value="32" />
+                            <entry key="outputName" value="ic_device" />
+                            <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="C:\Users\MissingNo" />
+                            <entry key="width" value="32" />
                           </map>
                         </option>
                       </PersistentState>

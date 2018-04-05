@@ -10,4 +10,5 @@
     <color name="divider">#BDBDBD</color>
     <color name="black_overlay">#66000000</color>
 
+    <color name="gray_background">#F5F5F5</color>
 </resources>
