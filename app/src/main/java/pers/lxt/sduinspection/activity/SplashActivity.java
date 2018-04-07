@@ -26,7 +26,9 @@ import java.lang.ref.WeakReference;
 import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.ServiceException;
+import pers.lxt.sduinspection.model.User;
 import pers.lxt.sduinspection.service.TokenService;
+import pers.lxt.sduinspection.service.UserService;
 import pers.lxt.sduinspection.util.ResponseCode;
 
 /**
@@ -51,7 +53,8 @@ public class SplashActivity extends AppCompatActivity {
      */
     private static final int RC_IS_LOGIN_SUCCESS = 0;
 
-    private CheckTokenTask mCheckTask = null;
+    private GetUserTask mCheckTask = null;
+    private User mCurrentUser;
 
     private Button usePhoneButton;
     private ImageView loginImage;
@@ -76,7 +79,7 @@ public class SplashActivity extends AppCompatActivity {
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
             //启动初始化
-            init();
+            init(true);
         }
     };
 
@@ -145,17 +148,22 @@ public class SplashActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_IS_LOGIN_SUCCESS && resultCode == RESULT_OK) {
-            finish();
+            hideLoginView();
+            init(false);
         }
     }
 
-    private void init(){
+    private void init(boolean needDelay){
         String phone = TokenService.getInstance(SplashActivity.this).getPhone();
         String token = TokenService.getInstance(SplashActivity.this).getToken();
         if(phone == null || token == null){
-            delayCallNextScene(mCallLoginSceneRunnable, MIN_DELAY);
+            if(needDelay){
+                delayCallNextScene(mCallLoginSceneRunnable, MIN_DELAY);
+            }else{
+                delayCallNextScene(mCallLoginSceneRunnable, 0);
+            }
         }else{
-            mCheckTask = new CheckTokenTask(phone, token, SplashActivity.this);
+            mCheckTask = new GetUserTask(phone, token, needDelay, SplashActivity.this);
             mCheckTask.execute((Void) null);
         }
     }
@@ -203,26 +211,42 @@ public class SplashActivity extends AppCompatActivity {
         usePhoneButton.setVisibility(View.VISIBLE);
     }
 
+    private void hideLoginView(){
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        loginImage.clearAnimation();
+        logoTextText.clearAnimation();
+        usePhoneButton.setVisibility(View.INVISIBLE);
+    }
+
     private void showMainActivity(){
-        startActivity(new Intent(this, MainActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("user", mCurrentUser);
+        startActivity(intent);
         finish();
     }
 
     /**
-     * Represents an asynchronous check token task used to authenticate
-     * the user.
+     * Represents an asynchronous get user task used to get the login user.
      */
-    public static class CheckTokenTask extends AsyncTask<Void, Void, Response<Boolean>> {
+    public static class GetUserTask extends AsyncTask<Void, Void, Response<User>> {
 
         private WeakReference<SplashActivity> splashActivityReference;
 
         private final String mPhone;
         private final String mToken;
         private long mStartTime;
+        private boolean mNeedDelay;
 
-        CheckTokenTask(String phone, String token, SplashActivity splashActivity) {
+        GetUserTask(String phone, String token, boolean needDelay, SplashActivity splashActivity) {
             mPhone = phone;
             mToken = token;
+            mNeedDelay = needDelay;
             this.splashActivityReference = new WeakReference<>(splashActivity);
         }
 
@@ -232,23 +256,23 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Response<Boolean> doInBackground(Void... params) {
+        protected Response<User> doInBackground(Void... params) {
             SplashActivity activity = splashActivityReference.get();
 
             if(activity == null || activity.isFinishing()) return null;
 
             try {
-                return TokenService.getInstance(activity).checkToken(mPhone, mToken);
+                return UserService.getInstance(activity).getUser(mPhone, mToken);
             } catch (InterruptedException ignored) {
                 return null;
             } catch (ServiceException e) {
-                Log.e(CheckTokenTask.class.getName(), e.getCause().getMessage(), e);
+                Log.e(GetUserTask.class.getName(), e.getCause().getMessage(), e);
                 return new Response<>(e.getCause());
             }
         }
 
         @Override
-        protected void onPostExecute(Response<Boolean> response) {
+        protected void onPostExecute(Response<User> response) {
             if (response == null) return;
 
             SplashActivity activity = splashActivityReference.get();
@@ -258,7 +282,7 @@ public class SplashActivity extends AppCompatActivity {
             activity.mCheckTask = null;
 
             long left = (MIN_DELAY - System.currentTimeMillis() + mStartTime);
-            if(left < 0) left = 0;
+            if(left < 0 || !mNeedDelay) left = 0;
 
             if (response.getException() != null) {
                 Toast.makeText(activity, R.string.error_unknown, Toast.LENGTH_LONG).show();
@@ -266,6 +290,7 @@ public class SplashActivity extends AppCompatActivity {
             } else {
                 switch (response.getCode()){
                     case ResponseCode.SUCCESS:
+                        activity.mCurrentUser = response.getObject();
                         activity.delayCallNextScene(activity.mCallMainSceneRunnable, left);
                         break;
                     case ResponseCode.TOKEN_EXPIRED:
@@ -274,7 +299,7 @@ public class SplashActivity extends AppCompatActivity {
                     default:
                         Toast.makeText(activity, R.string.error_unknown, Toast.LENGTH_LONG).show();
                         activity.delayCallNextScene(activity.mCallLoginSceneRunnable, left);
-                        Log.e(CheckTokenTask.class.getName(),
+                        Log.e(GetUserTask.class.getName(),
                                 "Unknown code: " + response.getCode() + ", message: " + response.getMessage());
                         break;
                 }
@@ -290,7 +315,7 @@ public class SplashActivity extends AppCompatActivity {
             activity.mCheckTask = null;
 
             long left = (MIN_DELAY - System.currentTimeMillis() + mStartTime);
-            if(left < 0) left = 0;
+            if(left < 0 || mNeedDelay) left = 0;
 
             activity.delayCallNextScene(activity.mCallLoginSceneRunnable, left);
         }

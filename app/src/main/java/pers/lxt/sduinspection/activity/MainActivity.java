@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import pers.lxt.sduinspection.R;
+import pers.lxt.sduinspection.model.User;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private User mCurrentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +55,22 @@ public class MainActivity extends AppCompatActivity {
         vMe = findViewById(R.id.me);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        mCurrentUser = (User) getIntent().getSerializableExtra("user");
+        initHome();
+    }
+
+    private void initHome(){
+        Toolbar toolbar = vHome.findViewById(R.id.toolbar);
+        toolbar.setTitle(mCurrentUser.getName());
+    }
+
+    private void initContacts(){
+
+    }
+
+    private void initMe(){
+
     }
 
     private long mExitTime = 0;

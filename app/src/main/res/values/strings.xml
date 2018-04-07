@@ -28,4 +28,5 @@
     <string name="prompt_waiting">待执行</string>
     <string name="prompt_finished">已完成</string>
     <string name="prompt_device">设备</string>
+    <string name="prompt_message">信息</string>
 </resources>

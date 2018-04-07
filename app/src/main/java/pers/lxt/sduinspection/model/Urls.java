@@ -8,7 +8,12 @@ public interface Urls {
     String HOST = "http://10.0.2.2:8080";
 
     /**
-     * Get Token for login
+     * Token Service
      */
     String TOKEN = HOST + "/token";
+
+    /**
+     * User Service
+     */
+    String USER = HOST + "/user";
 }

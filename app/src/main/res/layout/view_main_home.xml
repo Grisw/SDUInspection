@@ -6,17 +6,22 @@
     android:layout_height="match_parent"
     android:background="@drawable/splash">
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:elevation="5dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="12dp"
-        android:textStyle="bold"
-        android:text="胜多负少"/>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:titleTextColor="@android:color/white">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/imageDescription"/>
+
+    </android.support.v7.widget.Toolbar>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
@@ -54,8 +59,7 @@
                         android:id="@+id/executing_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="35sp"
-                        android:text="20"/>
+                        android:textSize="35sp"/>
                 </LinearLayout>
 
                 <com.zhy.android.percent.support.PercentLinearLayout
@@ -89,8 +93,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="35sp"
-                                android:text="20"/>
+                                android:textSize="35sp"/>
 
                         </LinearLayout>
 
@@ -116,8 +119,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="35sp"
-                                android:text="20"/>
+                                android:textSize="35sp"/>
 
                         </LinearLayout>
 
@@ -171,16 +173,17 @@
                             android:background="?android:selectableItemBackground"
                             android:clickable="true">
 
-                            <TextView
+                            <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/prompt_finished"/>
+                                android:src="@drawable/ic_msg_open"
+                                android:contentDescription="@string/imageDescription"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="35sp"
-                                android:text="20"/>
+                                android:textSize="18sp"
+                                android:text="@string/prompt_message"/>
 
                         </LinearLayout>
 
@@ -198,16 +201,17 @@
                             android:background="?android:selectableItemBackground"
                             android:clickable="true">
 
-                            <TextView
+                            <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/prompt_finished"/>
+                                android:src="@drawable/ic_msg_unread"
+                                android:contentDescription="@string/imageDescription"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="35sp"
-                                android:text="20"/>
+                                android:textSize="18sp"
+                                android:text="@string/prompt_message"/>
 
                         </LinearLayout>
 
