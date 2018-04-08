@@ -16,6 +16,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.RestRequest;
@@ -44,13 +46,16 @@ public class UserService {
         requestQueue = Volley.newRequestQueue(context);
     }
 
-    public Response<User> getUser(String phone, String token) throws InterruptedException, ServiceException {
+    public Response<User> getUser(String phone, String pn, String token) throws InterruptedException, ServiceException {
+        Map<String, String> getParams = new HashMap<>();
+        getParams.put("phoneNumber", phone);
+
         final Response<User> response = new Response<>();
         final ServiceException exception = new ServiceException();
         RestRequest request = new RestRequest(
                 Request.Method.GET,
-                Urls.USER + "?phoneNumber="+phone,
-                null,
+                Urls.makeUrl(Urls.USER, getParams),
+                pn,
                 token,
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override

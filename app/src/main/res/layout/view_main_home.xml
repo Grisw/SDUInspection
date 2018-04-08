@@ -56,7 +56,7 @@
                         android:text="@string/prompt_executing"/>
 
                     <TextView
-                        android:id="@+id/executing_number"
+                        android:id="@+id/doing_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="35sp"/>
@@ -91,6 +91,7 @@
                                 android:text="@string/prompt_waiting"/>
 
                             <TextView
+                                android:id="@+id/todo_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textSize="35sp"/>
@@ -117,6 +118,7 @@
                                 android:text="@string/prompt_finished"/>
 
                             <TextView
+                                android:id="@+id/done_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textSize="35sp"/>

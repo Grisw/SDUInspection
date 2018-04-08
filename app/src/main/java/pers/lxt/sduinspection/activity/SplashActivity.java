@@ -21,12 +21,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.ServiceException;
-import pers.lxt.sduinspection.model.User;
+import pers.lxt.sduinspection.model.Task;
+import pers.lxt.sduinspection.service.TaskService;
 import pers.lxt.sduinspection.service.TokenService;
 import pers.lxt.sduinspection.service.UserService;
 import pers.lxt.sduinspection.util.ResponseCode;
@@ -53,8 +58,8 @@ public class SplashActivity extends AppCompatActivity {
      */
     private static final int RC_IS_LOGIN_SUCCESS = 0;
 
-    private GetUserTask mCheckTask = null;
-    private User mCurrentUser;
+    private InitializeTask mInitialzeTask = null;
+    private Bundle mPassToMain;
 
     private Button usePhoneButton;
     private ImageView loginImage;
@@ -163,8 +168,8 @@ public class SplashActivity extends AppCompatActivity {
                 delayCallNextScene(mCallLoginSceneRunnable, 0);
             }
         }else{
-            mCheckTask = new GetUserTask(phone, token, needDelay, SplashActivity.this);
-            mCheckTask.execute((Void) null);
+            mInitialzeTask = new InitializeTask(phone, token, needDelay, SplashActivity.this);
+            mInitialzeTask.execute((Void) null);
         }
     }
 
@@ -226,15 +231,15 @@ public class SplashActivity extends AppCompatActivity {
 
     private void showMainActivity(){
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("user", mCurrentUser);
+        intent.putExtra("initialize", mPassToMain);
         startActivity(intent);
         finish();
     }
 
     /**
-     * Represents an asynchronous get user task used to get the login user.
+     * Represents an asynchronous task used to get the login user and some other info.
      */
-    public static class GetUserTask extends AsyncTask<Void, Void, Response<User>> {
+    public static class InitializeTask extends AsyncTask<Void, Void, Map<String, Response>> {
 
         private WeakReference<SplashActivity> splashActivityReference;
 
@@ -243,7 +248,7 @@ public class SplashActivity extends AppCompatActivity {
         private long mStartTime;
         private boolean mNeedDelay;
 
-        GetUserTask(String phone, String token, boolean needDelay, SplashActivity splashActivity) {
+        InitializeTask(String phone, String token, boolean needDelay, SplashActivity splashActivity) {
             mPhone = phone;
             mToken = token;
             mNeedDelay = needDelay;
@@ -256,52 +261,101 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Response<User> doInBackground(Void... params) {
+        protected Map<String, Response> doInBackground(Void... params) {
             SplashActivity activity = splashActivityReference.get();
 
             if(activity == null || activity.isFinishing()) return null;
 
+            Map<String, Response> responseMap = new HashMap<>();
+
+            // Get user
             try {
-                return UserService.getInstance(activity).getUser(mPhone, mToken);
+                responseMap.put("user", UserService.getInstance(activity).getUser(mPhone, mPhone, mToken));
             } catch (InterruptedException ignored) {
                 return null;
             } catch (ServiceException e) {
-                Log.e(GetUserTask.class.getName(), e.getCause().getMessage(), e);
-                return new Response<>(e.getCause());
+                Log.e(InitializeTask.class.getName(), e.getCause().getMessage(), e);
+                responseMap.put("ex", new Response<>(e.getCause()));
+                return responseMap;
             }
+
+            // Get tasks T count
+            try {
+                responseMap.put("task_count_t", TaskService.getInstance(activity).getTasksCount(mPhone, Task.State.T, mPhone, mToken));
+            } catch (InterruptedException e) {
+                return null;
+            } catch (ServiceException e) {
+                Log.e(InitializeTask.class.getName(), e.getCause().getMessage(), e);
+                responseMap.put("ex", new Response<>(e.getCause()));
+                return responseMap;
+            }
+
+            // Get tasks D count
+            try {
+                responseMap.put("task_count_d", TaskService.getInstance(activity).getTasksCount(mPhone, Task.State.D, mPhone, mToken));
+            } catch (InterruptedException e) {
+                return null;
+            } catch (ServiceException e) {
+                Log.e(InitializeTask.class.getName(), e.getCause().getMessage(), e);
+                responseMap.put("ex", new Response<>(e.getCause()));
+                return responseMap;
+            }
+
+            // Get tasks E count
+            try {
+                responseMap.put("task_count_e", TaskService.getInstance(activity).getTasksCount(mPhone, Task.State.E, mPhone, mToken));
+            } catch (InterruptedException e) {
+                return null;
+            } catch (ServiceException e) {
+                Log.e(InitializeTask.class.getName(), e.getCause().getMessage(), e);
+                responseMap.put("ex", new Response<>(e.getCause()));
+                return responseMap;
+            }
+            return responseMap;
         }
 
         @Override
-        protected void onPostExecute(Response<User> response) {
-            if (response == null) return;
+        protected void onPostExecute(Map<String, Response> responses) {
+            if (responses == null) return;
 
             SplashActivity activity = splashActivityReference.get();
 
             if(activity == null || activity.isFinishing()) return;
 
-            activity.mCheckTask = null;
+            activity.mInitialzeTask = null;
 
             long left = (MIN_DELAY - System.currentTimeMillis() + mStartTime);
             if(left < 0 || !mNeedDelay) left = 0;
 
-            if (response.getException() != null) {
+            if (responses.containsKey("ex")) {
                 Toast.makeText(activity, R.string.error_unknown, Toast.LENGTH_LONG).show();
                 activity.delayCallNextScene(activity.mCallLoginSceneRunnable, left);
             } else {
-                switch (response.getCode()){
-                    case ResponseCode.SUCCESS:
-                        activity.mCurrentUser = response.getObject();
-                        activity.delayCallNextScene(activity.mCallMainSceneRunnable, left);
-                        break;
-                    case ResponseCode.TOKEN_EXPIRED:
-                        activity.delayCallNextScene(activity.mCallLoginSceneRunnable, left);
-                        break;
-                    default:
-                        Toast.makeText(activity, R.string.error_unknown, Toast.LENGTH_LONG).show();
-                        activity.delayCallNextScene(activity.mCallLoginSceneRunnable, left);
-                        Log.e(GetUserTask.class.getName(),
-                                "Unknown code: " + response.getCode() + ", message: " + response.getMessage());
-                        break;
+                boolean pass = true;
+                activity.mPassToMain = new Bundle();
+                Set<Map.Entry<String, Response>> entries = responses.entrySet();
+                for(Map.Entry<String, Response> entry : entries){
+                    switch (entry.getValue().getCode()){
+                        case ResponseCode.SUCCESS:
+                            activity.mPassToMain.putSerializable(entry.getKey(), (Serializable) entry.getValue().getObject());
+                            break;
+                        case ResponseCode.TOKEN_EXPIRED:
+                            pass = false;
+                            break;
+                        default:
+                            pass = false;
+                            Toast.makeText(activity, R.string.error_unknown, Toast.LENGTH_LONG).show();
+                            activity.delayCallNextScene(activity.mCallLoginSceneRunnable, left);
+                            Log.e(InitializeTask.class.getName(),
+                                    entry.getKey() + ": unknown code: " + entry.getValue().getCode() + ", message: " + entry.getValue().getMessage());
+                            break;
+                    }
+                }
+                if(pass){
+                    activity.delayCallNextScene(activity.mCallMainSceneRunnable, left);
+                }else{
+                    activity.mPassToMain = null;
+                    activity.delayCallNextScene(activity.mCallLoginSceneRunnable, left);
                 }
             }
         }
@@ -312,7 +366,7 @@ public class SplashActivity extends AppCompatActivity {
 
             if(activity == null || activity.isFinishing()) return;
 
-            activity.mCheckTask = null;
+            activity.mInitialzeTask = null;
 
             long left = (MIN_DELAY - System.currentTimeMillis() + mStartTime);
             if(left < 0 || mNeedDelay) left = 0;

@@ -2,6 +2,10 @@
     <string name="app_name">移动巡检</string>
     <string name="imageDescription">Image</string>
 
+    <!-- common -->
+    <string name="sex_male">男</string>
+    <string name="sex_female">女</string>
+
     <!-- splash -->
     <string name="splash_usePhone_button">使用手机号登录</string>
 

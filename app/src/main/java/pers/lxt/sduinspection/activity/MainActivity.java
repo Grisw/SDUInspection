@@ -8,7 +8,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Locale;
 
 import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.model.User;
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private User mCurrentUser;
+    private Bundle mInitialzeData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +59,27 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        mCurrentUser = (User) getIntent().getSerializableExtra("user");
+        mInitialzeData = getIntent().getBundleExtra("initialize");
         initHome();
     }
 
     private void initHome(){
+        User user = (User) mInitialzeData.getSerializable("user");
+        int task_count_t = mInitialzeData.getInt("task_count_t");
+        int task_count_d = mInitialzeData.getInt("task_count_d");
+        int task_count_e = mInitialzeData.getInt("task_count_e");
+
         Toolbar toolbar = vHome.findViewById(R.id.toolbar);
-        toolbar.setTitle(mCurrentUser.getName());
+        toolbar.setTitle(user != null ? user.getName() : "");
+
+        ((TextView) vHome.findViewById(R.id.todo_count))
+                .setText(String.format(Locale.getDefault(), "%d", task_count_t));
+
+        ((TextView) vHome.findViewById(R.id.doing_count))
+                .setText(String.format(Locale.getDefault(), "%d", task_count_d));
+
+        ((TextView) vHome.findViewById(R.id.done_count))
+                .setText(String.format(Locale.getDefault(), "%d", task_count_e));
     }
 
     private void initContacts(){

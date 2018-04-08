@@ -1,19 +1,23 @@
 package pers.lxt.sduinspection.model;
 
+import android.content.Context;
+
 import java.io.Serializable;
 import java.util.Date;
 
+import pers.lxt.sduinspection.R;
+
 public class User implements Serializable {
     public enum Sex{
-        M("男"), F("女");
+        M(R.string.sex_male), F(R.string.sex_female);
 
-        private String sex;
-        Sex(String sex){
+        private int sex;
+        Sex(int sex){
             this.sex = sex;
         }
 
-        public String getSex(){
-            return sex;
+        public String getSex(Context context){
+            return context.getString(sex);
         }
     }
 
