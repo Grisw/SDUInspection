@@ -8,6 +8,7 @@ import java.util.Date;
 import pers.lxt.sduinspection.R;
 
 public class User implements Serializable {
+
     public enum Sex{
         M(R.string.sex_male), F(R.string.sex_female);
 
@@ -27,6 +28,7 @@ public class User implements Serializable {
     private String name;
     private String email;
     private String leader;
+    private String leaderName;
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -75,4 +77,13 @@ public class User implements Serializable {
     public void setLeader(String leader) {
         this.leader = leader;
     }
+
+    public String getLeaderName() {
+        return leaderName;
+    }
+
+    public void setLeaderName(String leaderName) {
+        this.leaderName = leaderName;
+    }
+
 }

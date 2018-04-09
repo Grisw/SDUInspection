@@ -32,6 +32,8 @@ public class Task implements Serializable {
     private Date publishTime;
     private Date dueTime;
     private String creator;
+    private String creatorName;
+    private String assigneeName;
 
     public int getId() {
         return id;
@@ -96,4 +98,21 @@ public class Task implements Serializable {
     public void setCreator(String creator) {
         this.creator = creator;
     }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public String getAssigneeName() {
+        return assigneeName;
+    }
+
+    public void setAssigneeName(String assigneeName) {
+        this.assigneeName = assigneeName;
+    }
+
 }

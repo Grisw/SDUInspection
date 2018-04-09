@@ -1,23 +1,19 @@
 package pers.lxt.sduinspection.service;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
 
 import pers.lxt.sduinspection.model.Response;
@@ -25,37 +21,33 @@ import pers.lxt.sduinspection.model.RestRequest;
 import pers.lxt.sduinspection.model.ServiceException;
 import pers.lxt.sduinspection.model.Urls;
 import pers.lxt.sduinspection.model.User;
-import pers.lxt.sduinspection.util.MD5Utils;
 
 /**
  * User Restful Service.
  * It's a singleton class, use {@code getInstance} to get the instance.
  */
-public class UserService {
+public class ContactService {
 
-    private static UserService _userService;
-    public static UserService getInstance(Context context){
-        if(_userService == null){
-            _userService = new UserService(context);
+    private static ContactService _contactService;
+    public static ContactService getInstance(Context context){
+        if(_contactService == null){
+            _contactService = new ContactService(context);
         }
-        return _userService;
+        return _contactService;
     }
 
     private RequestQueue requestQueue;
 
-    private UserService(Context context){
+    private ContactService(Context context){
         requestQueue = Volley.newRequestQueue(context);
     }
 
-    public Response<User> getUser(String phone, String pn, String token) throws InterruptedException, ServiceException {
-        Map<String, String> getParams = new HashMap<>();
-        getParams.put("phoneNumber", phone);
-
-        final Response<User> response = new Response<>();
+    public Response<List<Map<String, String>>> getContacts(String pn, String token) throws InterruptedException, ServiceException {
+        final Response<List<Map<String, String>>> response = new Response<>();
         final ServiceException exception = new ServiceException();
         RestRequest request = new RestRequest(
                 Request.Method.GET,
-                Urls.makeUrl(Urls.USER, getParams),
+                Urls.CONTACT,
                 pn,
                 token,
                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -65,20 +57,16 @@ public class UserService {
                             response.setCode(s.getInt("code"));
                             response.setMessage(s.getString("message"));
                             if(!s.isNull("body")){
-                                JSONObject jsonObject = s.getJSONObject("body");
-                                User user = new User();
-                                if(jsonObject.isNull("birthday")){
-                                    user.setBirthday(null);
-                                }else{
-                                    user.setBirthday(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(jsonObject.getString("birthday")));
+                                JSONArray jsonArray = s.getJSONArray("body");
+                                List<Map<String, String>> list = new ArrayList<>();
+                                for(int i = 0; i < jsonArray.length(); i++){
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    Map<String, String> contact = new HashMap<>();
+                                    contact.put("phone", jsonObject.getString("phone"));
+                                    contact.put("name", jsonObject.getString("name"));
+                                    list.add(contact);
                                 }
-                                user.setEmail(jsonObject.getString("email"));
-                                user.setLeader(jsonObject.getString("leader"));
-                                user.setName(jsonObject.getString("name"));
-                                user.setPhoneNumber(jsonObject.getString("phoneNumber"));
-                                user.setSex(User.Sex.valueOf(jsonObject.getString("sex")));
-                                user.setLeaderName(jsonObject.getString("leaderName"));
-                                response.setObject(user);
+                                response.setObject(list);
                             }
                         } catch (Exception e) {
                             exception.initCause(e);

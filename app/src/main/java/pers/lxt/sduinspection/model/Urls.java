@@ -13,7 +13,7 @@ public class Urls {
     /**
      * Host address.
      */
-    public static final String HOST = "http://10.0.2.2:8080";
+    public static final String HOST = "http://192.168.1.107:8080";
 
     /**
      * Token Service
@@ -34,6 +34,11 @@ public class Urls {
      * Get Task count
      */
     public static final String TASK_COUNT = TASK + "/count";
+
+    /**
+     * Get Contact Service
+     */
+    public static final String CONTACT = HOST + "/contact";
 
     /**
      * Make url with GET parameters.

@@ -11,9 +11,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import pers.lxt.sduinspection.model.Response;
@@ -43,9 +46,10 @@ public class TaskService {
         requestQueue = Volley.newRequestQueue(context);
     }
 
-    public Response<List<Task>> getTasks(String assignee, String pn, String token) throws InterruptedException, ServiceException {
+    public Response<List<Task>> getTasks(String assignee, Task.State state, String pn, String token) throws InterruptedException, ServiceException {
         Map<String, String> getParams = new HashMap<>();
         getParams.put("assignee", assignee);
+        getParams.put("state", state.toString());
 
         final Response<List<Task>> response = new Response<>();
         final ServiceException exception = new ServiceException();
@@ -75,9 +79,11 @@ public class TaskService {
                                         task.setDueTime(DateFormat.getDateTimeInstance().parse(jsonObject.getString("dueTime")));
                                     }
                                     task.setId(jsonObject.getInt("id"));
-                                    task.setPublishTime(DateFormat.getDateTimeInstance().parse(jsonObject.getString("publishTime")));
+                                    task.setPublishTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(jsonObject.getString("publishTime")));
                                     task.setState(Task.State.valueOf(jsonObject.getString("state")));
                                     task.setTitle(jsonObject.getString("title"));
+                                    task.setCreatorName(jsonObject.getString("creatorName"));
+                                    task.setAssigneeName(jsonObject.getString("assigneeName"));
                                     tasks.add(task);
                                 }
                                 response.setObject(tasks);
@@ -120,12 +126,11 @@ public class TaskService {
         return response;
     }
 
-    public Response<Integer> getTasksCount(String assignee, Task.State state, String pn, String token) throws InterruptedException, ServiceException {
+    public Response<Map<Task.State, Integer>> getTasksCount(String assignee, String pn, String token) throws InterruptedException, ServiceException {
         Map<String, String> getParams = new HashMap<>();
         getParams.put("assignee", assignee);
-        getParams.put("state", state.toString());
 
-        final Response<Integer> response = new Response<>();
+        final Response<Map<Task.State, Integer>> response = new Response<>();
         final ServiceException exception = new ServiceException();
         RestRequest request = new RestRequest(
                 Request.Method.GET,
@@ -139,7 +144,14 @@ public class TaskService {
                             response.setCode(s.getInt("code"));
                             response.setMessage(s.getString("message"));
                             if(!s.isNull("body")){
-                                response.setObject(s.getInt("body"));
+                                JSONObject jsonObject = s.getJSONObject("body");
+                                Iterator<String> keys = jsonObject.keys();
+                                Map<Task.State, Integer> counts = new HashMap<>();
+                                while(keys.hasNext()){
+                                    String key = keys.next();
+                                    counts.put(Task.State.valueOf(key), jsonObject.getInt(key));
+                                }
+                                response.setObject(counts);
                             }
                         } catch (Exception e) {
                             exception.initCause(e);

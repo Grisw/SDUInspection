@@ -31,6 +31,7 @@ import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.ServiceException;
 import pers.lxt.sduinspection.model.Task;
+import pers.lxt.sduinspection.service.ContactService;
 import pers.lxt.sduinspection.service.TaskService;
 import pers.lxt.sduinspection.service.TokenService;
 import pers.lxt.sduinspection.service.UserService;
@@ -279,31 +280,9 @@ public class SplashActivity extends AppCompatActivity {
                 return responseMap;
             }
 
-            // Get tasks T count
+            // Get tasks count
             try {
-                responseMap.put("task_count_t", TaskService.getInstance(activity).getTasksCount(mPhone, Task.State.T, mPhone, mToken));
-            } catch (InterruptedException e) {
-                return null;
-            } catch (ServiceException e) {
-                Log.e(InitializeTask.class.getName(), e.getCause().getMessage(), e);
-                responseMap.put("ex", new Response<>(e.getCause()));
-                return responseMap;
-            }
-
-            // Get tasks D count
-            try {
-                responseMap.put("task_count_d", TaskService.getInstance(activity).getTasksCount(mPhone, Task.State.D, mPhone, mToken));
-            } catch (InterruptedException e) {
-                return null;
-            } catch (ServiceException e) {
-                Log.e(InitializeTask.class.getName(), e.getCause().getMessage(), e);
-                responseMap.put("ex", new Response<>(e.getCause()));
-                return responseMap;
-            }
-
-            // Get tasks E count
-            try {
-                responseMap.put("task_count_e", TaskService.getInstance(activity).getTasksCount(mPhone, Task.State.E, mPhone, mToken));
+                responseMap.put("task_count", TaskService.getInstance(activity).getTasksCount(mPhone, mPhone, mToken));
             } catch (InterruptedException e) {
                 return null;
             } catch (ServiceException e) {

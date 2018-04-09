@@ -5,6 +5,7 @@
     <!-- common -->
     <string name="sex_male">男</string>
     <string name="sex_female">女</string>
+    <string name="prompt_login_again">请重新登录</string>
 
     <!-- splash -->
     <string name="splash_usePhone_button">使用手机号登录</string>
@@ -33,4 +34,13 @@
     <string name="prompt_finished">已完成</string>
     <string name="prompt_device">设备</string>
     <string name="prompt_message">信息</string>
+    <string name="prompt_main_device">设备：</string>
+    <string name="prompt_main_creator">创建者：</string>
+    <string name="prompt_main_publish_time">创建时间：</string>
+    <string name="prompt_main_due_time">完成期限：</string>
+    <string name="prompt_main_assignee">委托人：</string>
+    <string name="prompt_start_exe">开始执行</string>
+    <string name="prompt_finish">完成任务</string>
+    <string name="title_task_info">任务详细</string>
+    <string name="prompt_task_no_due">无期限</string>
 </resources>
