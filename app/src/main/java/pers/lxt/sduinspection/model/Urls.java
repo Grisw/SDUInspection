@@ -36,6 +36,11 @@ public class Urls {
     public static final String TASK_COUNT = TASK + "/count";
 
     /**
+     * Update Task state
+     */
+    public static final String TASK_STATE = TASK + "/state";
+
+    /**
      * Get Contact Service
      */
     public static final String CONTACT = HOST + "/contact";

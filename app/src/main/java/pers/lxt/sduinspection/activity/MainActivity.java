@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         mInitializeData = getIntent().getBundleExtra("initialize");
         homeBack = new Stack<>();
+        homeBack.push(null);
         initHome();
         initContacts();
         initMe();
@@ -164,7 +165,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = vHome.findViewById(R.id.toolbar);
         toolbar.setTitle(user != null ? user.getName() : "");
         toolbar.setNavigationIcon(null);
-        toolbar.setNavigationOnClickListener(null);
+        homeBack.pop();
+        toolbar.setNavigationOnClickListener(homeBack.peek());
 
         vHome.findViewById(R.id.home_main).setVisibility(View.VISIBLE);
         vHome.findViewById(R.id.home_recycler).setVisibility(View.GONE);
@@ -182,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 hideHomeTaskInfo(originTitle);
             }
         });
-        toolbar.setNavigationOnClickListener(homeBack.pop());
+        toolbar.setNavigationOnClickListener(homeBack.peek());
 
         vHome.findViewById(R.id.home_recycler).setVisibility(View.GONE);
         vHome.findViewById(R.id.home_device_info).setVisibility(View.VISIBLE);
@@ -212,12 +214,14 @@ public class MainActivity extends AppCompatActivity {
             ((TextView)vHome.findViewById(R.id.task_info_due_time)).setText(format.format(task.getDueTime()));
         }
         ((TextView)vHome.findViewById(R.id.task_info_publish_time)).setText(format.format(task.getPublishTime()));
+        ((TextView)vHome.findViewById(R.id.task_info_state)).setText(task.getState().getState(this));
     }
 
     private void hideHomeTaskInfo(String title){
         Toolbar toolbar = vHome.findViewById(R.id.toolbar);
         toolbar.setTitle(title);
-        toolbar.setNavigationOnClickListener(homeBack.pop());
+        homeBack.pop();
+        toolbar.setNavigationOnClickListener(homeBack.peek());
 
         vHome.findViewById(R.id.home_recycler).setVisibility(View.VISIBLE);
         vHome.findViewById(R.id.home_device_info).setVisibility(View.GONE);
@@ -247,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             BottomNavigationView navigation = findViewById(R.id.navigation);
-            if (!homeBack.empty() && navigation.getSelectedItemId() == R.id.navigation_home){
+            if (homeBack.peek() != null && navigation.getSelectedItemId() == R.id.navigation_home){
                 homeBack.peek().onClick(null);
                 return true;
             }

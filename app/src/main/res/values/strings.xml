@@ -43,4 +43,5 @@
     <string name="prompt_finish">完成任务</string>
     <string name="title_task_info">任务详细</string>
     <string name="prompt_task_no_due">无期限</string>
+    <string name="prompt_main_state">状态：</string>
 </resources>

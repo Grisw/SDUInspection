@@ -8,6 +8,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -153,6 +154,63 @@ public class TaskService {
                                 }
                                 response.setObject(counts);
                             }
+                        } catch (Exception e) {
+                            exception.initCause(e);
+                        }
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        exception.initCause(volleyError);
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                });
+
+        // Add to request queue.
+        requestQueue.add(request);
+
+        // Wait response.
+        synchronized (response){
+            response.wait();
+        }
+
+        // Throw ServiceException if error occurred while requesting.
+        if(exception.getCause() != null){
+            throw exception;
+        }
+
+        return response;
+    }
+
+    public Response<Map<Task.State, Integer>> updateTaskState(int id, Task.State state, String pn, String token) throws InterruptedException, ServiceException, JSONException {
+        JSONObject body = new JSONObject();
+        body.put("id", id);
+        body.put("state", state.toString());
+
+        final Response<Map<Task.State, Integer>> response = new Response<>();
+        final ServiceException exception = new ServiceException();
+        RestRequest request = new RestRequest(
+                Request.Method.POST,
+                Urls.TASK_STATE,
+                body,
+                pn,
+                token,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject s) {
+                        try {
+                            response.setCode(s.getInt("code"));
+                            response.setMessage(s.getString("message"));
                         } catch (Exception e) {
                             exception.initCause(e);
                         }
