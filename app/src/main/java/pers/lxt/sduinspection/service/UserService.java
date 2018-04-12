@@ -9,14 +9,17 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -40,6 +43,8 @@ public class UserService {
         }
         return _userService;
     }
+
+    private User currentUser;
 
     private RequestQueue requestQueue;
 
@@ -116,5 +121,89 @@ public class UserService {
         }
 
         return response;
+    }
+
+    public Response<List<User>> getJunior(String phone, String pn, String token) throws InterruptedException, ServiceException {
+        Map<String, String> getParams = new HashMap<>();
+        getParams.put("phoneNumber", phone);
+
+        final Response<List<User>> response = new Response<>();
+        final ServiceException exception = new ServiceException();
+        RestRequest request = new RestRequest(
+                Request.Method.GET,
+                Urls.makeUrl(Urls.USER_JUNIOR, getParams),
+                pn,
+                token,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject s) {
+                        try {
+                            response.setCode(s.getInt("code"));
+                            response.setMessage(s.getString("message"));
+                            if(!s.isNull("body")){
+                                JSONArray jsonArray = s.getJSONArray("body");
+                                List<User> users = new ArrayList<>();
+                                for(int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    User user = new User();
+                                    if(jsonObject.isNull("birthday")){
+                                        user.setBirthday(null);
+                                    }else{
+                                        user.setBirthday(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(jsonObject.getString("birthday")));
+                                    }
+                                    user.setEmail(jsonObject.getString("email"));
+                                    user.setLeader(jsonObject.getString("leader"));
+                                    user.setName(jsonObject.getString("name"));
+                                    user.setPhoneNumber(jsonObject.getString("phoneNumber"));
+                                    user.setSex(User.Sex.valueOf(jsonObject.getString("sex")));
+                                    user.setLeaderName(jsonObject.getString("leaderName"));
+                                    users.add(user);
+                                }
+                                response.setObject(users);
+                            }
+                        } catch (Exception e) {
+                            exception.initCause(e);
+                        }
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        exception.initCause(volleyError);
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                });
+
+        // Add to request queue.
+        requestQueue.add(request);
+
+        // Wait response.
+        synchronized (response){
+            response.wait();
+        }
+
+        // Throw ServiceException if error occurred while requesting.
+        if(exception.getCause() != null){
+            throw exception;
+        }
+
+        return response;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 }

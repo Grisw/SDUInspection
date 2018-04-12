@@ -60,6 +60,7 @@ public class MainHomeFragment extends Fragment {
         int task_count_d = task_count != null ? task_count.get(Task.State.D) : 0;
         int task_count_e = task_count != null ? task_count.get(Task.State.E) : 0;
         User user = (User) initializeData.getSerializable("user");
+        UserService.getInstance(getActivity()).setCurrentUser(user);
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle(user != null ? user.getName() : "");
@@ -89,6 +90,12 @@ public class MainHomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 showFragment(Task.State.E);
+            }
+        });
+        view.findViewById(R.id.toolbar_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).changeFragment(MainHomeCreateTaskFragment.class, null, false);
             }
         });
     }

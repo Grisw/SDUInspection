@@ -23,10 +23,12 @@ public class TaskDeviceAdapter extends RecyclerView.Adapter<TaskDeviceAdapter.Vi
 
     private List<TaskDevice> devices;
     private Fragment mFragment;
+    private boolean mEditable;
 
-    public TaskDeviceAdapter(Fragment fragment, List<TaskDevice> devices){
+    public TaskDeviceAdapter(Fragment fragment, List<TaskDevice> devices, boolean editable){
         this.devices = devices;
         mFragment = fragment;
+        mEditable = editable;
     }
 
     @Override
@@ -47,6 +49,7 @@ public class TaskDeviceAdapter extends RecyclerView.Adapter<TaskDeviceAdapter.Vi
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("taskdevice", device);
+                bundle.putBoolean("editable", mEditable);
                 ((MainActivity) mFragment.getActivity()).changeFragment(MainHomeTaskDeviceFragment.class, bundle, false);
             }
         });

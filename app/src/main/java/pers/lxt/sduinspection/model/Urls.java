@@ -26,6 +26,11 @@ public class Urls {
     public static final String USER = HOST + "/user";
 
     /**
+     * Get Junior User Service
+     */
+    public static final String USER_JUNIOR = USER + "/junior";
+
+    /**
      * Task Service
      */
     public static final String TASK = HOST + "/task";
@@ -44,6 +49,16 @@ public class Urls {
      * Get Contact Service
      */
     public static final String CONTACT = HOST + "/contact";
+
+    /**
+     * Get Device Service
+     */
+    public static final String DEVICE = HOST + "/device";
+
+    /**
+     * Get All Device Service
+     */
+    public static final String DEVICE_ALL = DEVICE + "/all";
 
     /**
      * Make url with GET parameters.

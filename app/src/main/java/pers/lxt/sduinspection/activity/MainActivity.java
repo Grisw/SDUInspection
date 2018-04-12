@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             if(to == null){
                 return false;
             }
-            changeFragment(to, getIntent().getBundleExtra("initialize"), true);
+            changeFragment(to, null, true);
             return true;
         }
     };
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setSelectedItemId(R.id.navigation_home);
+        changeFragment(MainHomeFragment.class, getIntent().getBundleExtra("initialize"), true);
     }
 
     public void changeFragment(Class<? extends Fragment> fragmentClass, Bundle data, boolean clearStack) {

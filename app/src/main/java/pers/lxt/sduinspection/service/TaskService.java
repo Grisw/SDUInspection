@@ -2,6 +2,7 @@ package pers.lxt.sduinspection.service;
 
 import android.content.Context;
 import android.util.Base64;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,6 +16,7 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -79,7 +81,7 @@ public class TaskService {
                                     if(jsonObject.isNull("dueTime")){
                                         task.setDueTime(null);
                                     }else{
-                                        task.setDueTime(DateFormat.getDateTimeInstance().parse(jsonObject.getString("dueTime")));
+                                        task.setDueTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(jsonObject.getString("dueTime")));
                                     }
                                     task.setId(jsonObject.getInt("id"));
                                     task.setPublishTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(jsonObject.getString("publishTime")));
@@ -233,6 +235,73 @@ public class TaskService {
                         try {
                             response.setCode(s.getInt("code"));
                             response.setMessage(s.getString("message"));
+                        } catch (Exception e) {
+                            exception.initCause(e);
+                        }
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        exception.initCause(volleyError);
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                });
+
+        // Add to request queue.
+        requestQueue.add(request);
+
+        // Wait response.
+        synchronized (response){
+            response.wait();
+        }
+
+        // Throw ServiceException if error occurred while requesting.
+        if(exception.getCause() != null){
+            throw exception;
+        }
+
+        return response;
+    }
+
+    public Response<Integer> createTask(String title, String description, String assignee, Date dueTime, List<Integer> devices, String pn, String token) throws InterruptedException, ServiceException, JSONException {
+        JSONObject body = new JSONObject();
+        body.put("title", title);
+        body.put("description", description);
+        body.put("assignee", assignee);
+        if(dueTime == null){
+            body.put("dueTime", null);
+        }else{
+            body.put("dueTime", new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(dueTime));
+        }
+        body.put("devices", new JSONArray(devices));
+
+        final Response<Integer> response = new Response<>();
+        final ServiceException exception = new ServiceException();
+        RestRequest request = new RestRequest(
+                Request.Method.PUT,
+                Urls.TASK,
+                body,
+                pn,
+                token,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject s) {
+                        try {
+                            response.setCode(s.getInt("code"));
+                            response.setMessage(s.getString("message"));
+                            if(!s.isNull("body")){
+                                response.setObject(s.getInt("body"));
+                            }
                         } catch (Exception e) {
                             exception.initCause(e);
                         }

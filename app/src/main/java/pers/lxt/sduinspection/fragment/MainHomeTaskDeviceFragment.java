@@ -27,6 +27,7 @@ public class MainHomeTaskDeviceFragment extends Fragment {
 
         Bundle data = getArguments();
         final TaskDevice device = Objects.requireNonNull((TaskDevice) data.getSerializable("taskdevice"));
+        boolean editable = data.getBoolean("editable");
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -36,13 +37,30 @@ public class MainHomeTaskDeviceFragment extends Fragment {
             }
         });
 
-        Button button = view.findViewById(R.id.checked_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO checked device
-            }
-        });
+        if(editable){
+            view.findViewById(R.id.checked_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //TODO checked device
+                }
+            });
+            view.findViewById(R.id.task_device_take_picture).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //TODO checked device
+                }
+            });
+            view.findViewById(R.id.task_device_add_issue).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //TODO checked device
+                }
+            });
+        }else {
+            view.findViewById(R.id.checked_button).setVisibility(View.GONE);
+            view.findViewById(R.id.task_device_take_picture).setVisibility(View.GONE);
+            view.findViewById(R.id.task_device_add_issue).setVisibility(View.GONE);
+        }
         ((TextView)view.findViewById(R.id.task_device_id)).setText(String.format(Locale.getDefault(), "%d", device.getDeviceId()));
         ((TextView)view.findViewById(R.id.task_device_description)).setText(device.getDescription());
         ((TextView)view.findViewById(R.id.task_device_name)).setText(device.getName());

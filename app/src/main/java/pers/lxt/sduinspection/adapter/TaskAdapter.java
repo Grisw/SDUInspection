@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import pers.lxt.sduinspection.R;
@@ -18,8 +19,6 @@ import pers.lxt.sduinspection.fragment.MainHomeTasksFragment;
 import pers.lxt.sduinspection.model.Task;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
-
-    private static final int MAX_CONTENT_LENGTH = 30;
 
     private List<Task> mTasks;
     private MainHomeTasksFragment mFragment;
@@ -38,14 +37,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Task task = mTasks.get(position);
-        int upperBound = Math.min(task.getDescription().length(), MAX_CONTENT_LENGTH);
-        String content = task.getDescription().substring(0, upperBound);
-        if(content.length() < task.getDescription().length()){
-            holder.view_content.setText(String.format("%s...", content));
-        }else{
-            holder.view_content.setText(content);
-        }
-        holder.view_title.setText(mTasks.get(position).getTitle());
+        holder.view_content.setText(String.format(Locale.getDefault(), "%d", task.getId()));
+        holder.view_title.setText(task.getTitle());
         holder.click_area.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

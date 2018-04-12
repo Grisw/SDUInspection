@@ -86,8 +86,8 @@ public class MainHomeTaskInfoFragment extends Fragment {
                 });
                 break;
             case E:
-                button.setText(R.string.prompt_finished);
-                button.setEnabled(false);
+                button.setVisibility(View.GONE);
+                break;
         }
         ((TextView)view.findViewById(R.id.task_info_title)).setText(task.getTitle());
         ((TextView)view.findViewById(R.id.task_info_content)).setText(task.getDescription());
@@ -105,7 +105,7 @@ public class MainHomeTaskInfoFragment extends Fragment {
 
         RecyclerView devicesRecycler = view.findViewById(R.id.task_info_devices);
         devicesRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        devicesRecycler.setAdapter(new TaskDeviceAdapter(this, task.getDevices()));
+        devicesRecycler.setAdapter(new TaskDeviceAdapter(this, task.getDevices(), task.getState() == Task.State.D));
         devicesRecycler.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
 
         return view;

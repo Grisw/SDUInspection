@@ -53,4 +53,13 @@
     <string name="prompt_picture">现场照片：</string>
     <string name="prompt_checked_time">检查时间：</string>
     <string name="prompt_unchecked">未检查</string>
+    <string name="prompt_create_task">创建任务</string>
+    <string name="prompt_task_title">任务主题</string>
+    <string name="prompt_task_desc">任务描述</string>
+    <string name="prompt_due_time_reject">期限时间不能在现在的时间之前</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="prompt_title_length">标题长度不小于3字符</string>
+    <string name="prompt_description_length">描述不小于5字符</string>
+    <string name="prompt_to_myself">任命给自己</string>
 </resources>
