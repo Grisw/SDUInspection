@@ -4,11 +4,11 @@ import android.content.Context;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import pers.lxt.sduinspection.R;
 
 public class Task implements Serializable {
-
     public enum State{
         T(R.string.prompt_waiting),
         D(R.string.prompt_executing),
@@ -34,6 +34,7 @@ public class Task implements Serializable {
     private String creator;
     private String creatorName;
     private String assigneeName;
+    private List<TaskDevice> devices;
 
     public int getId() {
         return id;
@@ -115,4 +116,11 @@ public class Task implements Serializable {
         this.assigneeName = assigneeName;
     }
 
+    public List<TaskDevice> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(List<TaskDevice> devices) {
+        this.devices = devices;
+    }
 }

@@ -324,7 +324,6 @@ public class SplashActivity extends AppCompatActivity {
                         default:
                             pass = false;
                             Toast.makeText(activity, R.string.error_unknown, Toast.LENGTH_LONG).show();
-                            activity.delayCallNextScene(activity.mCallLoginSceneRunnable, left);
                             Log.e(InitializeTask.class.getName(),
                                     entry.getKey() + ": unknown code: " + entry.getValue().getCode() + ", message: " + entry.getValue().getMessage());
                             break;

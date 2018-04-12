@@ -44,4 +44,13 @@
     <string name="title_task_info">任务详细</string>
     <string name="prompt_task_no_due">无期限</string>
     <string name="prompt_main_state">状态：</string>
+    <string name="prompt_task_id">任务ID：</string>
+    <string name="prompt_checked">检查完成</string>
+    <string name="prompt_position">位置：</string>
+    <string name="prompt_issue">问题：</string>
+    <string name="prompt_device_id">设备ID：</string>
+    <string name="title_task_device">任务设备</string>
+    <string name="prompt_picture">现场照片：</string>
+    <string name="prompt_checked_time">检查时间：</string>
+    <string name="prompt_unchecked">未检查</string>
 </resources>

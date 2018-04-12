@@ -1,6 +1,7 @@
 package pers.lxt.sduinspection.service;
 
 import android.content.Context;
+import android.util.Base64;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,6 +25,7 @@ import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.RestRequest;
 import pers.lxt.sduinspection.model.ServiceException;
 import pers.lxt.sduinspection.model.Task;
+import pers.lxt.sduinspection.model.TaskDevice;
 import pers.lxt.sduinspection.model.Urls;
 import pers.lxt.sduinspection.model.User;
 
@@ -85,6 +87,26 @@ public class TaskService {
                                     task.setTitle(jsonObject.getString("title"));
                                     task.setCreatorName(jsonObject.getString("creatorName"));
                                     task.setAssigneeName(jsonObject.getString("assigneeName"));
+
+                                    JSONArray devicesArray = jsonObject.getJSONArray("devices");
+                                    List<TaskDevice> taskDevices = new ArrayList<>();
+                                    for (int j = 0; j < devicesArray.length(); j++){
+                                        TaskDevice device = new TaskDevice();
+                                        JSONObject deviceObject = devicesArray.getJSONObject(j);
+                                        device.setChecked(deviceObject.getBoolean("checked"));
+                                        device.setDescription(deviceObject.getString("description"));
+                                        device.setDeviceId(deviceObject.getInt("deviceId"));
+                                        device.setTaskId(deviceObject.getInt("taskId"));
+                                        device.setLatitude(deviceObject.getDouble("latitude"));
+                                        device.setLongitude(deviceObject.getDouble("longitude"));
+                                        device.setName(deviceObject.getString("name"));
+                                        if(!deviceObject.isNull("picture"))
+                                            device.setPicture(Base64.decode(deviceObject.getString("picture"), Base64.DEFAULT));
+                                        if(!deviceObject.isNull("checkedTime"))
+                                            device.setCheckedTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(deviceObject.getString("checkedTime")));
+                                        taskDevices.add(device);
+                                    }
+                                    task.setDevices(taskDevices);
                                     tasks.add(task);
                                 }
                                 response.setObject(tasks);
@@ -192,12 +214,12 @@ public class TaskService {
         return response;
     }
 
-    public Response<Map<Task.State, Integer>> updateTaskState(int id, Task.State state, String pn, String token) throws InterruptedException, ServiceException, JSONException {
+    public Response<Void> updateTaskState(int id, Task.State state, String pn, String token) throws InterruptedException, ServiceException, JSONException {
         JSONObject body = new JSONObject();
         body.put("id", id);
         body.put("state", state.toString());
 
-        final Response<Map<Task.State, Integer>> response = new Response<>();
+        final Response<Void> response = new Response<>();
         final ServiceException exception = new ServiceException();
         RestRequest request = new RestRequest(
                 Request.Method.POST,

@@ -82,7 +82,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/D:/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/content/ic_markunread_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/D:/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/image/ic_photo_camera_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -93,11 +93,8 @@
                         <option name="values">
                           <map>
                             <entry key="color" value="333333" />
-                            <entry key="height" value="32" />
-                            <entry key="outputName" value="ic_msg_unread" />
-                            <entry key="overrideSize" value="true" />
+                            <entry key="outputName" value="ic_camera_black" />
                             <entry key="sourceFile" value="C:\Users\MissingNo" />
-                            <entry key="width" value="32" />
                           </map>
                         </option>
                       </PersistentState>

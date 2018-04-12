@@ -1,9 +1,11 @@
 package pers.lxt.sduinspection.adapter;
 
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.Map;
 
 import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.activity.MainActivity;
+import pers.lxt.sduinspection.fragment.MainHomeTaskInfoFragment;
+import pers.lxt.sduinspection.fragment.MainHomeTasksFragment;
 import pers.lxt.sduinspection.model.Task;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
@@ -18,11 +22,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     private static final int MAX_CONTENT_LENGTH = 30;
 
     private List<Task> mTasks;
-    private MainActivity mMainActivity;
+    private MainHomeTasksFragment mFragment;
 
-    public TaskAdapter(MainActivity mainActivity, List<Task> tasks){
+    public TaskAdapter(MainHomeTasksFragment fragment, List<Task> tasks){
         mTasks = tasks;
-        mMainActivity = mainActivity;
+        mFragment = fragment;
     }
 
     @Override
@@ -45,7 +49,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         holder.click_area.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mMainActivity.showHomeTaskInfo(task);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("task", task);
+                ((MainActivity) mFragment.getActivity()).changeFragment(MainHomeTaskInfoFragment.class, bundle, false);
             }
         });
     }
@@ -53,11 +59,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return mTasks == null? 0 : mTasks.size();
-    }
-
-    public void clear(){
-        mTasks.clear();
-        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

@@ -6,220 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/splash">
 
-    <com.zhy.android.percent.support.PercentRelativeLayout
-        android:id="@+id/home_main"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_heightPercent="80%h"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/transparent">
-
-        <LinearLayout
-            android:id="@+id/doing_button"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_widthPercent="32%w"
-            app:layout_heightPercent="32%w"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/circle_layout"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:elevation="5dp"
-            android:clickable="true">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/prompt_executing"/>
-
-            <TextView
-                android:id="@+id/doing_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="35sp"/>
-        </LinearLayout>
-
-        <com.zhy.android.percent.support.PercentLinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="#55FFFFFF"
-            app:layout_marginTopPercent="16%w"
-            android:elevation="3dp">
-
-            <com.zhy.android.percent.support.PercentLinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_heightPercent="38%w"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/todo_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:layout_widthPercent="50%w"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:background="?android:selectableItemBackground"
-                    android:clickable="true">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/prompt_waiting"/>
-
-                    <TextView
-                        android:id="@+id/todo_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="35sp"/>
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#999999"/>
-
-                <LinearLayout
-                    android:id="@+id/done_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:layout_widthPercent="50%w"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:background="?android:selectableItemBackground"
-                    android:clickable="true">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/prompt_finished"/>
-
-                    <TextView
-                        android:id="@+id/done_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="35sp"/>
-
-                </LinearLayout>
-
-            </com.zhy.android.percent.support.PercentLinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#999999"/>
-
-            <com.zhy.android.percent.support.PercentLinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_heightPercent="25%w"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:layout_widthPercent="33%w"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:background="?android:selectableItemBackground"
-                    android:clickable="true">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_device"
-                        android:contentDescription="@string/imageDescription"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:text="@string/prompt_device"/>
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#999999"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:layout_widthPercent="34%w"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:background="?android:selectableItemBackground"
-                    android:clickable="true">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_msg_open"
-                        android:contentDescription="@string/imageDescription"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:text="@string/prompt_message"/>
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#999999"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:layout_widthPercent="33%w"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:background="?android:selectableItemBackground"
-                    android:clickable="true">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_msg_unread"
-                        android:contentDescription="@string/imageDescription"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:text="@string/prompt_message"/>
-
-                </LinearLayout>
-
-            </com.zhy.android.percent.support.PercentLinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#999999"/>
-
-        </com.zhy.android.percent.support.PercentLinearLayout>
-
-    </com.zhy.android.percent.support.PercentRelativeLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/home_recycler"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#55FFFFFF"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:elevation="3dp"/>
-
     <RelativeLayout
-        android:id="@+id/home_device_info"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#55FFFFFF"
@@ -298,6 +85,7 @@
                             android:text="@string/prompt_main_device"/>
 
                         <android.support.v7.widget.RecyclerView
+                            android:id="@+id/task_info_devices"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
@@ -325,6 +113,25 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="15sp"
+                                android:text="@string/prompt_task_id"/>
+
+                            <TextView
+                                android:id="@+id/task_info_id"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="15sp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -428,16 +235,18 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="@string/title_task_info"
         app:titleTextColor="@android:color/white">
 
         <ImageButton
             android:id="@+id/toolbar_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_add"
+            android:src="@drawable/ic_send"
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:background="@android:color/transparent"
+            android:background="?android:selectableItemBackground"
             android:contentDescription="@string/imageDescription"/>
 
     </android.support.v7.widget.Toolbar>
