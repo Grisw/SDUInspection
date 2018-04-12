@@ -12,6 +12,8 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.baidu.mapapi.SDKInitializer;
+
 import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.fragment.MainHomeFragment;
 
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);

@@ -22,6 +22,7 @@
             android:text="@string/prompt_checked"/>
 
         <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/checked_button"
@@ -83,6 +84,13 @@
                             android:layout_height="wrap_content"
                             android:textSize="15sp"
                             android:text="@string/prompt_position"/>
+
+                        <com.baidu.mapapi.map.TextureMapView
+                            android:id="@+id/bmapView"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            app:layout_heightPercent="60%w"
+                            android:clickable="true" />
 
                         <TextView
                             android:id="@+id/task_device_position"
