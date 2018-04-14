@@ -95,7 +95,7 @@ public class MainHomeFragment extends Fragment {
         view.findViewById(R.id.toolbar_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity) getActivity()).changeFragment(MainHomeCreateTaskFragment.class, null, false);
+                ((MainActivity) getActivity()).changeFragment(MainHomeCreateTaskFragment.class, null, false, null);
             }
         });
     }
@@ -103,7 +103,7 @@ public class MainHomeFragment extends Fragment {
     private void showFragment(Task.State state){
         Bundle bundle = new Bundle();
         bundle.putSerializable("state", state);
-        ((MainActivity)getActivity()).changeFragment(MainHomeTasksFragment.class, bundle, false);
+        ((MainActivity)getActivity()).changeFragment(MainHomeTasksFragment.class, bundle, false, null);
     }
 
     /**

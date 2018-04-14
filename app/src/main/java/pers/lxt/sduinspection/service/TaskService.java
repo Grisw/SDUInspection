@@ -103,7 +103,7 @@ public class TaskService {
                                         device.setLongitude(deviceObject.getDouble("longitude"));
                                         device.setName(deviceObject.getString("name"));
                                         if(!deviceObject.isNull("picture"))
-                                            device.setPicture(Base64.decode(deviceObject.getString("picture"), Base64.DEFAULT));
+                                            device.setPicture(deviceObject.getString("picture"));
                                         if(!deviceObject.isNull("checkedTime"))
                                             device.setCheckedTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(deviceObject.getString("checkedTime")));
                                         taskDevices.add(device);
@@ -301,6 +301,68 @@ public class TaskService {
                             response.setMessage(s.getString("message"));
                             if(!s.isNull("body")){
                                 response.setObject(s.getInt("body"));
+                            }
+                        } catch (Exception e) {
+                            exception.initCause(e);
+                        }
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        exception.initCause(volleyError);
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                });
+
+        // Add to request queue.
+        requestQueue.add(request);
+
+        // Wait response.
+        synchronized (response){
+            response.wait();
+        }
+
+        // Throw ServiceException if error occurred while requesting.
+        if(exception.getCause() != null){
+            throw exception;
+        }
+
+        return response;
+    }
+
+    public Response<Date> updateTaskDevice(TaskDevice device, String pn, String token) throws ServiceException, InterruptedException, JSONException {
+        JSONObject body = new JSONObject();
+        body.put("taskId", device.getTaskId());
+        body.put("deviceId", device.getDeviceId());
+        body.put("checked", device.isChecked());
+        body.put("picture", device.getPictureBase64());
+
+        final Response<Date> response = new Response<>();
+        final ServiceException exception = new ServiceException();
+        RestRequest request = new RestRequest(
+                Request.Method.POST,
+                Urls.TASK_DEVICE,
+                body,
+                pn,
+                token,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject s) {
+                        try {
+                            response.setCode(s.getInt("code"));
+                            response.setMessage(s.getString("message"));
+                            if(!s.isNull("body")){
+                                response.setObject(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(s.getString("body")));
                             }
                         } catch (Exception e) {
                             exception.initCause(e);

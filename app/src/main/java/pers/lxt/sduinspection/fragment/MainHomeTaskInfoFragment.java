@@ -27,11 +27,11 @@ import java.util.Objects;
 import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.activity.MainActivity;
 import pers.lxt.sduinspection.activity.SplashActivity;
-import pers.lxt.sduinspection.adapter.TaskAdapter;
 import pers.lxt.sduinspection.adapter.TaskDeviceAdapter;
 import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.ServiceException;
 import pers.lxt.sduinspection.model.Task;
+import pers.lxt.sduinspection.model.TaskDevice;
 import pers.lxt.sduinspection.service.TaskService;
 import pers.lxt.sduinspection.service.TokenService;
 import pers.lxt.sduinspection.util.ResponseCode;
@@ -40,12 +40,18 @@ public class MainHomeTaskInfoFragment extends Fragment {
 
     private UpdateTaskTask mUpdateTaskTask;
 
+    private Task task;
+
+    public Task getTask() {
+        return task;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_home_task_info, container, false);
 
         Bundle data = getArguments();
-        final Task task = Objects.requireNonNull((Task) data.getSerializable("task"));
+        task = Objects.requireNonNull((Task) data.getSerializable("task"));
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -54,6 +60,14 @@ public class MainHomeTaskInfoFragment extends Fragment {
                 ((MainActivity)getActivity()).back();
             }
         });
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        View view = Objects.requireNonNull(getView());
 
         Button button = view.findViewById(R.id.change_state_button);
         switch (task.getState()){
@@ -76,6 +90,13 @@ public class MainHomeTaskInfoFragment extends Fragment {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        List<TaskDevice> taskDevices = task.getDevices();
+                        for(TaskDevice taskDevice : taskDevices){
+                            if(!taskDevice.isChecked()){
+                                Toast.makeText(getActivity(), R.string.prompt_please_check_devices, Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
                         mUpdateTaskTask = new UpdateTaskTask(
                                 TokenService.getInstance(getActivity()).getPhone(),
                                 TokenService.getInstance(getActivity()).getToken(),
@@ -107,8 +128,6 @@ public class MainHomeTaskInfoFragment extends Fragment {
         devicesRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         devicesRecycler.setAdapter(new TaskDeviceAdapter(this, task.getDevices(), task.getState() == Task.State.D));
         devicesRecycler.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-
-        return view;
     }
 
     public static class UpdateTaskTask extends AsyncTask<Void, Void, Response<Void>> {
@@ -165,7 +184,7 @@ public class MainHomeTaskInfoFragment extends Fragment {
                 switch (response.getCode()){
                     case ResponseCode.SUCCESS:
                         mTask.setState(mState);
-                        ((MainActivity) fragment.getActivity()).changeFragment(MainHomeFragment.class, null, true);
+                        ((MainActivity) fragment.getActivity()).changeFragment(MainHomeFragment.class, null, true, null);
                         break;
                     case ResponseCode.TOKEN_EXPIRED:
                         Toast.makeText(fragment.getActivity(), R.string.prompt_login_again, Toast.LENGTH_LONG).show();

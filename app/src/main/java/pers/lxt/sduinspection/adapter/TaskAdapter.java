@@ -44,7 +44,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("task", task);
-                ((MainActivity) mFragment.getActivity()).changeFragment(MainHomeTaskInfoFragment.class, bundle, false);
+                ((MainActivity) mFragment.getActivity()).changeFragment(MainHomeTaskInfoFragment.class, bundle, false, null);
             }
         });
     }

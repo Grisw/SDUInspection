@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             if(to == null){
                 return false;
             }
-            changeFragment(to, null, true);
+            changeFragment(to, null, true, null);
             return true;
         }
     };
@@ -52,10 +52,10 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        changeFragment(MainHomeFragment.class, getIntent().getBundleExtra("initialize"), true);
+        changeFragment(MainHomeFragment.class, getIntent().getBundleExtra("initialize"), true, null);
     }
 
-    public void changeFragment(Class<? extends Fragment> fragmentClass, Bundle data, boolean clearStack) {
+    public void changeFragment(Class<? extends Fragment> fragmentClass, Bundle data, boolean clearStack, Fragment targetFragment) {
         Fragment fragment;
         try {
             fragment = fragmentClass.newInstance();
@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         fragment.setArguments(data);
+        if(targetFragment != null)
+            fragment.setTargetFragment(targetFragment, 0);
 
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();

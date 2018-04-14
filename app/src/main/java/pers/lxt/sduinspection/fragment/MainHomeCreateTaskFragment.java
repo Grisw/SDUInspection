@@ -245,7 +245,7 @@ public class MainHomeCreateTaskFragment extends Fragment {
 
     public void finishCreating(int id){
         Toast.makeText(getActivity(), "创建任务ID：" + id, Toast.LENGTH_SHORT).show();
-        ((MainActivity) getActivity()).changeFragment(MainHomeFragment.class, null, true);
+        ((MainActivity) getActivity()).changeFragment(MainHomeFragment.class, null, true, null);
     }
 
     public static class CreateTaskTask extends AsyncTask<Void, Void, Response<Integer>> {

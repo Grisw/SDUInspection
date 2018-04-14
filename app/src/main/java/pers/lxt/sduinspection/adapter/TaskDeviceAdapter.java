@@ -50,7 +50,7 @@ public class TaskDeviceAdapter extends RecyclerView.Adapter<TaskDeviceAdapter.Vi
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("taskdevice", device);
                 bundle.putBoolean("editable", mEditable);
-                ((MainActivity) mFragment.getActivity()).changeFragment(MainHomeTaskDeviceFragment.class, bundle, false);
+                ((MainActivity) mFragment.getActivity()).changeFragment(MainHomeTaskDeviceFragment.class, bundle, false, mFragment);
             }
         });
     }

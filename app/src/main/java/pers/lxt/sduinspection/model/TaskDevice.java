@@ -1,5 +1,11 @@
 package pers.lxt.sduinspection.model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+import android.util.Log;
+
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -7,7 +13,7 @@ public class TaskDevice implements Serializable {
     private int taskId;
     private int deviceId;
     private boolean checked;
-    private byte[] picture;
+    private Bitmap picture;
     private Date checkedTime;
     private String name;
     private String description;
@@ -36,14 +42,6 @@ public class TaskDevice implements Serializable {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
-    }
-
-    public byte[] getPicture() {
-        return picture;
-    }
-
-    public void setPicture(byte[] picture) {
-        this.picture = picture;
     }
 
     public String getName() {
@@ -84,5 +82,26 @@ public class TaskDevice implements Serializable {
 
     public void setCheckedTime(Date checkedTime) {
         this.checkedTime = checkedTime;
+    }
+
+    public Bitmap getPicture() {
+        return picture;
+    }
+
+    public String getPictureBase64() {
+        if(picture == null)
+            return null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        picture.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        return Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+    }
+
+    public void setPicture(Bitmap picture) {
+        this.picture = picture;
+    }
+
+    public void setPicture(String base64Picture) {
+        byte[] data = Base64.decode(base64Picture, Base64.DEFAULT);
+        this.picture = BitmapFactory.decodeByteArray(data, 0, data.length);
     }
 }
