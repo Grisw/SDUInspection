@@ -71,6 +71,11 @@ public class Urls {
     public static final String ISSUE = HOST + "/issue";
 
     /**
+     * Get Close Issue Service
+     */
+    public static final String ISSUE_CLOSE = ISSUE + "/close";
+
+    /**
      * Make url with GET parameters.
      * @param url Base url.
      * @param params GET params

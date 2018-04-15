@@ -52,7 +52,7 @@ public class TaskService {
         requestQueue = Volley.newRequestQueue(context);
     }
 
-    public Response<List<Task>> getTasks(String assignee, Task.State state, String pn, String token) throws InterruptedException, ServiceException {
+    public Response<List<Task>> getTasks(String assignee, final Task.State state, String pn, String token) throws InterruptedException, ServiceException {
         Map<String, String> getParams = new HashMap<>();
         getParams.put("assignee", assignee);
         getParams.put("state", state.toString());
@@ -121,6 +121,7 @@ public class TaskService {
                                             issue.setCreatorName(issueObject.getString("creatorName"));
                                             issue.setPicture(issueObject.getString("picture"));
                                             issue.setPublishTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(issueObject.getString("publishTime")));
+                                            issue.setState(Issue.State.valueOf(issueObject.getString("state")));
                                             issues.add(issue);
                                         }
                                         device.setIssues(issues);

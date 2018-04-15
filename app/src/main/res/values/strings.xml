@@ -69,4 +69,7 @@
     <string name="prompt_create_issue">提交新问题</string>
     <string name="prompt_issue_title">标题</string>
     <string name="prompt_issue_desc">问题描述</string>
+    <string name="issue">问题</string>
+    <string name="close_issue">关闭问题</string>
+    <string name="prompt_relate_task">相关任务ID：</string>
 </resources>

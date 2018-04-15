@@ -14,6 +14,7 @@ import java.util.Locale;
 
 import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.activity.MainActivity;
+import pers.lxt.sduinspection.fragment.MainHomeIssueFragment;
 import pers.lxt.sduinspection.fragment.MainHomeTaskDeviceFragment;
 import pers.lxt.sduinspection.model.Issue;
 import pers.lxt.sduinspection.model.TaskDevice;
@@ -40,14 +41,13 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
 
         holder.view_id.setText(String.format(Locale.getDefault(), "%d", issue.getId()));
         holder.view_title.setText(issue.getTitle());
+        holder.close.setChecked(issue.getState() == Issue.State.C);
         holder.click_area.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("taskdevice", device);
-//                bundle.putBoolean("editable", mEditable);
-//                ((MainActivity) mFragment.getActivity()).changeFragment(MainHomeTaskDeviceFragment.class, bundle, false, mFragment);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("issue", issue);
+                ((MainActivity) mFragment.getActivity()).changeFragment(MainHomeIssueFragment.class, bundle, false, mFragment);
             }
         });
     }
@@ -61,12 +61,14 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
         TextView view_title;
         TextView view_id;
         View click_area;
+        CheckBox close;
 
         ViewHolder(View itemView) {
             super(itemView);
             click_area = itemView.findViewById(R.id.click_area);
             view_title = itemView.findViewById(R.id.title);
             view_id = itemView.findViewById(R.id.id);
+            close = itemView.findViewById(R.id.close);
         }
     }
 }

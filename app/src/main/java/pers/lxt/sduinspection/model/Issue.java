@@ -9,6 +9,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Issue implements Serializable {
+
+    public enum State{
+        O,
+        C
+    }
+
     private int id;
     private int deviceId;
     private Integer taskId;
@@ -18,6 +24,7 @@ public class Issue implements Serializable {
     private String creator;
     private String creatorName;
     private Date publishTime;
+    private State state;
 
     public int getId() {
         return id;
@@ -103,4 +110,13 @@ public class Issue implements Serializable {
     public void setCreatorName(String creatorName) {
         this.creatorName = creatorName;
     }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
 }
