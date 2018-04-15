@@ -290,9 +290,12 @@ public class MainHomeCreateTaskFragment extends Fragment {
                 );
             } catch (InterruptedException ignore) {
                 return null;
-            } catch (ServiceException | JSONException e) {
+            } catch (ServiceException e) {
                 Log.e(CreateTaskTask.class.getName(), e.getCause().getMessage(), e);
                 return new Response<>(e.getCause());
+            } catch (JSONException e) {
+                Log.e(CreateTaskTask.class.getName(), e.getMessage(), e);
+                return new Response<>(e);
             }
         }
 

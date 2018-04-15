@@ -8,6 +8,7 @@ import android.util.Log;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class TaskDevice implements Serializable {
     private int taskId;
@@ -19,6 +20,7 @@ public class TaskDevice implements Serializable {
     private String description;
     private double latitude;
     private double longitude;
+    private List<Issue> issues;
 
     public int getTaskId() {
         return taskId;
@@ -103,5 +105,13 @@ public class TaskDevice implements Serializable {
     public void setPicture(String base64Picture) {
         byte[] data = Base64.decode(base64Picture, Base64.DEFAULT);
         this.picture = BitmapFactory.decodeByteArray(data, 0, data.length);
+    }
+
+    public List<Issue> getIssues() {
+        return issues;
+    }
+
+    public void setIssues(List<Issue> issues) {
+        this.issues = issues;
     }
 }

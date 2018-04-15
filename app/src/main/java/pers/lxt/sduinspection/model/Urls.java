@@ -66,6 +66,11 @@ public class Urls {
     public static final String DEVICE_ALL = DEVICE + "/all";
 
     /**
+     * Get Issue Service
+     */
+    public static final String ISSUE = HOST + "/issue";
+
+    /**
      * Make url with GET parameters.
      * @param url Base url.
      * @param params GET params

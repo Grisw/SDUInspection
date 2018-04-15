@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import pers.lxt.sduinspection.model.Issue;
 import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.RestRequest;
 import pers.lxt.sduinspection.model.ServiceException;
@@ -106,6 +107,23 @@ public class TaskService {
                                             device.setPicture(deviceObject.getString("picture"));
                                         if(!deviceObject.isNull("checkedTime"))
                                             device.setCheckedTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(deviceObject.getString("checkedTime")));
+                                        JSONArray issueArray = deviceObject.getJSONArray("issues");
+                                        List<Issue> issues = new ArrayList<>();
+                                        for (int k = 0; k < issueArray.length(); k++){
+                                            Issue issue = new Issue();
+                                            JSONObject issueObject = issueArray.getJSONObject(k);
+                                            issue.setTaskId(issueObject.getInt("taskId"));
+                                            issue.setId(issueObject.getInt("id"));
+                                            issue.setDeviceId(issueObject.getInt("deviceId"));
+                                            issue.setTitle(issueObject.getString("title"));
+                                            issue.setDescription(issueObject.getString("description"));
+                                            issue.setCreator(issueObject.getString("creator"));
+                                            issue.setCreatorName(issueObject.getString("creatorName"));
+                                            issue.setPicture(issueObject.getString("picture"));
+                                            issue.setPublishTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(issueObject.getString("publishTime")));
+                                            issues.add(issue);
+                                        }
+                                        device.setIssues(issues);
                                         taskDevices.add(device);
                                     }
                                     task.setDevices(taskDevices);

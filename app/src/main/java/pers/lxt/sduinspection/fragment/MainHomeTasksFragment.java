@@ -11,24 +11,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 import pers.lxt.sduinspection.R;
-import pers.lxt.sduinspection.activity.LoginActivity;
 import pers.lxt.sduinspection.activity.MainActivity;
 import pers.lxt.sduinspection.activity.SplashActivity;
 import pers.lxt.sduinspection.adapter.TaskAdapter;
 import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.ServiceException;
 import pers.lxt.sduinspection.model.Task;
-import pers.lxt.sduinspection.model.User;
 import pers.lxt.sduinspection.service.TaskService;
 import pers.lxt.sduinspection.service.TokenService;
 import pers.lxt.sduinspection.util.ResponseCode;

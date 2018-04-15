@@ -9,6 +9,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,8 +54,11 @@ import java.util.Objects;
 import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.activity.MainActivity;
 import pers.lxt.sduinspection.activity.SplashActivity;
+import pers.lxt.sduinspection.adapter.IssueAdapter;
+import pers.lxt.sduinspection.adapter.TaskDeviceAdapter;
 import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.ServiceException;
+import pers.lxt.sduinspection.model.Task;
 import pers.lxt.sduinspection.model.TaskDevice;
 import pers.lxt.sduinspection.service.TaskService;
 import pers.lxt.sduinspection.service.TokenService;
@@ -65,6 +71,10 @@ public class MainHomeTaskDeviceFragment extends Fragment {
     private TextureMapView mMapView;
     private LocationClient mLocationClient = null;
     private TaskDevice taskDevice;
+
+    public TaskDevice getTaskDevice() {
+        return taskDevice;
+    }
 
     private static final int RQ_TAKE_PHOTO = 0;
 
@@ -81,7 +91,7 @@ public class MainHomeTaskDeviceFragment extends Fragment {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).back();
+                finish(null);
             }
         });
 
@@ -111,7 +121,9 @@ public class MainHomeTaskDeviceFragment extends Fragment {
             view.findViewById(R.id.task_device_add_issue).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //TODO add issue
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("device", taskDevice);
+                    ((MainActivity) getActivity()).changeFragment(MainHomeCreateIssueFragment.class, bundle, false, MainHomeTaskDeviceFragment.this);
                 }
             });
         }else {
@@ -216,6 +228,13 @@ public class MainHomeTaskDeviceFragment extends Fragment {
         return view;
     }
 
+    private void setIssues(){
+        RecyclerView issueRecycler = Objects.requireNonNull(getView()).findViewById(R.id.task_device_issue);
+        issueRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        issueRecycler.setAdapter(new IssueAdapter(this, taskDevice.getIssues()));
+        issueRecycler.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -264,12 +283,28 @@ public class MainHomeTaskDeviceFragment extends Fragment {
         super.onResume();
         mMapView.onResume();
         mLocationClient.start();
+        setIssues();
     }
     @Override
     public void onPause() {
         super.onPause();
         mMapView.onPause();
         mLocationClient.stop();
+    }
+
+    private void finish(Date checkedTime){
+        List<TaskDevice> taskDevices = ((MainHomeTaskInfoFragment) getTargetFragment()).getTask().getDevices();
+        for(TaskDevice taskDevice : taskDevices){
+            if(taskDevice.getDeviceId() == this.taskDevice.getDeviceId()){
+                taskDevice.setPicture(this.taskDevice.getPicture());
+                taskDevice.setChecked(this.taskDevice.isChecked());
+                if(checkedTime != null)
+                    taskDevice.setCheckedTime(checkedTime);
+                taskDevice.setIssues(this.taskDevice.getIssues());
+                break;
+            }
+        }
+        ((MainActivity) getActivity()).back();
     }
 
     public static class UpdateTaskDeviceTask extends AsyncTask<Void, Void, Response<Date>> {
@@ -325,16 +360,7 @@ public class MainHomeTaskDeviceFragment extends Fragment {
             } else {
                 switch (response.getCode()){
                     case ResponseCode.SUCCESS:
-                        List<TaskDevice> taskDevices = ((MainHomeTaskInfoFragment) fragment.getTargetFragment()).getTask().getDevices();
-                        for(TaskDevice taskDevice : taskDevices){
-                            if(taskDevice.getDeviceId() == mTaskDevice.getDeviceId()){
-                                taskDevice.setPicture(mTaskDevice.getPicture());
-                                taskDevice.setChecked(mTaskDevice.isChecked());
-                                taskDevice.setCheckedTime(response.getObject());
-                                break;
-                            }
-                        }
-                        ((MainActivity) fragment.getActivity()).back();
+                        fragment.finish(response.getObject());
                         break;
                     case ResponseCode.TOKEN_EXPIRED:
                         Toast.makeText(fragment.getActivity(), R.string.prompt_login_again, Toast.LENGTH_LONG).show();

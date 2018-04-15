@@ -66,4 +66,7 @@
     <string name="my_position">我的位置</string>
     <string name="prompt_take_picture">请拍一张现场照片</string>
     <string name="prompt_please_check_devices">请先完成所有设备的检查</string>
+    <string name="prompt_create_issue">提交新问题</string>
+    <string name="prompt_issue_title">标题</string>
+    <string name="prompt_issue_desc">问题描述</string>
 </resources>
