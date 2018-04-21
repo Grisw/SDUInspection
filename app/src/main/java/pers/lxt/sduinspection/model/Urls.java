@@ -13,7 +13,7 @@ public class Urls {
     /**
      * Host address.
      */
-    public static final String HOST = "http://192.168.1.107:8080";
+    public static final String HOST = "http://192.168.1.103:8080";
 
     /**
      * Token Service

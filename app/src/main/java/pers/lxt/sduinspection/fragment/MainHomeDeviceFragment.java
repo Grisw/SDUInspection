@@ -71,7 +71,7 @@ public class MainHomeDeviceFragment extends Fragment {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main_home_task_device, container, false);
+        View view = inflater.inflate(R.layout.fragment_main_home_device, container, false);
 
         Bundle data = getArguments();
         device = Objects.requireNonNull((Device) data.getSerializable("device"));
@@ -87,7 +87,11 @@ public class MainHomeDeviceFragment extends Fragment {
         ((TextView)view.findViewById(R.id.device_id)).setText(String.format(Locale.getDefault(), "%d", device.getId()));
         ((TextView)view.findViewById(R.id.device_description)).setText(device.getDescription());
         ((TextView)view.findViewById(R.id.device_name)).setText(device.getName());
-        setIssues();
+
+        RecyclerView issueRecycler = view.findViewById(R.id.device_issue);
+        issueRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        issueRecycler.setAdapter(new IssueAdapter(this, device.getIssues()));
+        issueRecycler.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
 
         mMapView = view.findViewById(R.id.bmapView);
         mMapView.getChildAt(0).setOnTouchListener(new View.OnTouchListener() {
@@ -165,10 +169,7 @@ public class MainHomeDeviceFragment extends Fragment {
     }
 
     private void setIssues(){
-        RecyclerView issueRecycler = Objects.requireNonNull(getView()).findViewById(R.id.task_device_issue);
-        issueRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        issueRecycler.setAdapter(new IssueAdapter(this, device.getIssues()));
-        issueRecycler.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+
     }
 
     private void centerMyLocation(){
