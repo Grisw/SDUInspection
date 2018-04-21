@@ -24,7 +24,8 @@
             android:gravity="center"
             android:orientation="vertical"
             android:elevation="5dp"
-            android:clickable="true">
+            android:clickable="true"
+            android:focusable="true">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -60,7 +61,8 @@
                     android:gravity="center"
                     android:orientation="vertical"
                     android:background="?android:selectableItemBackground"
-                    android:clickable="true">
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -88,7 +90,8 @@
                     android:gravity="center"
                     android:orientation="vertical"
                     android:background="?android:selectableItemBackground"
-                    android:clickable="true">
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -117,13 +120,15 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/devices"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     app:layout_widthPercent="33%w"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:background="?android:selectableItemBackground"
-                    android:clickable="true">
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -144,56 +149,56 @@
                     android:layout_height="match_parent"
                     android:background="#999999"/>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:layout_widthPercent="34%w"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:background="?android:selectableItemBackground"
-                    android:clickable="true">
+                <!--<LinearLayout-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--app:layout_widthPercent="34%w"-->
+                    <!--android:gravity="center"-->
+                    <!--android:orientation="vertical"-->
+                    <!--android:background="?android:selectableItemBackground"-->
+                    <!--android:clickable="true">-->
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_msg_open"
-                        android:contentDescription="@string/imageDescription"/>
+                    <!--<ImageView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:src="@drawable/ic_msg_open"-->
+                        <!--android:contentDescription="@string/imageDescription"/>-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:text="@string/prompt_message"/>
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:textSize="18sp"-->
+                        <!--android:text="@string/prompt_message"/>-->
 
-                </LinearLayout>
+                <!--</LinearLayout>-->
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="#999999"/>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:layout_widthPercent="33%w"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:background="?android:selectableItemBackground"
-                    android:clickable="true">
+                <!--<LinearLayout-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--app:layout_widthPercent="33%w"-->
+                    <!--android:gravity="center"-->
+                    <!--android:orientation="vertical"-->
+                    <!--android:background="?android:selectableItemBackground"-->
+                    <!--android:clickable="true">-->
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_msg_unread"
-                        android:contentDescription="@string/imageDescription"/>
+                    <!--<ImageView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:src="@drawable/ic_msg_unread"-->
+                        <!--android:contentDescription="@string/imageDescription"/>-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:text="@string/prompt_message"/>
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:textSize="18sp"-->
+                        <!--android:text="@string/prompt_message"/>-->
 
-                </LinearLayout>
+                <!--</LinearLayout>-->
 
             </com.zhy.android.percent.support.PercentLinearLayout>
 
@@ -209,7 +214,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="?android:attr/actionBarSize"
         app:titleTextColor="@android:color/white">
 
         <ImageButton

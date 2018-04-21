@@ -98,6 +98,12 @@ public class MainHomeFragment extends Fragment {
                 ((MainActivity) getActivity()).changeFragment(MainHomeCreateTaskFragment.class, null, false, null);
             }
         });
+        view.findViewById(R.id.devices).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).changeFragment(MainHomeDevicesFragment.class, null, false, null);
+            }
+        });
     }
 
     private void showFragment(Task.State state){

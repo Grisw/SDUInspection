@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#55FFFFFF"
-        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginTop="?android:attr/actionBarSize"
         android:elevation="3dp"
         android:padding="10dp">
 
@@ -234,21 +234,9 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="?android:attr/actionBarSize"
         app:navigationIcon="@drawable/ic_back"
         app:title="@string/title_task_info"
-        app:titleTextColor="@android:color/white">
-
-        <ImageButton
-            android:id="@+id/toolbar_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_send"
-            android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:background="?android:selectableItemBackground"
-            android:contentDescription="@string/imageDescription"/>
-
-    </android.support.v7.widget.Toolbar>
+        app:titleTextColor="@android:color/white"/>
 
 </com.zhy.android.percent.support.PercentRelativeLayout>

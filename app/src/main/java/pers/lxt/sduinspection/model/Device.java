@@ -1,6 +1,7 @@
 package pers.lxt.sduinspection.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Device implements Serializable {
     private int id;
@@ -8,6 +9,7 @@ public class Device implements Serializable {
     private String description;
     private double latitude;
     private double longitude;
+    private List<Issue> issues;
 
     public int getId() {
         return id;
@@ -47,5 +49,13 @@ public class Device implements Serializable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public List<Issue> getIssues() {
+        return issues;
+    }
+
+    public void setIssues(List<Issue> issues) {
+        this.issues = issues;
     }
 }

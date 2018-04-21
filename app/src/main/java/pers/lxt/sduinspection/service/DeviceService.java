@@ -10,12 +10,15 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import pers.lxt.sduinspection.model.Device;
+import pers.lxt.sduinspection.model.Issue;
 import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.RestRequest;
 import pers.lxt.sduinspection.model.ServiceException;
@@ -66,6 +69,24 @@ public class DeviceService {
                                     device.setLatitude(jsonObject.getDouble("latitude"));
                                     device.setLongitude(jsonObject.getDouble("longitude"));
                                     device.setName(jsonObject.getString("name"));
+                                    JSONArray issueArray = jsonObject.getJSONArray("issues");
+                                    List<Issue> issues = new ArrayList<>();
+                                    for (int k = 0; k < issueArray.length(); k++){
+                                        Issue issue = new Issue();
+                                        JSONObject issueObject = issueArray.getJSONObject(k);
+                                        issue.setTaskId(issueObject.getInt("taskId"));
+                                        issue.setId(issueObject.getInt("id"));
+                                        issue.setDeviceId(issueObject.getInt("deviceId"));
+                                        issue.setTitle(issueObject.getString("title"));
+                                        issue.setDescription(issueObject.getString("description"));
+                                        issue.setCreator(issueObject.getString("creator"));
+                                        issue.setCreatorName(issueObject.getString("creatorName"));
+                                        issue.setPicture(issueObject.getString("picture"));
+                                        issue.setPublishTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(issueObject.getString("publishTime")));
+                                        issue.setState(Issue.State.valueOf(issueObject.getString("state")));
+                                        issues.add(issue);
+                                    }
+                                    device.setIssues(issues);
                                     list.add(device);
                                 }
                                 response.setObject(list);
