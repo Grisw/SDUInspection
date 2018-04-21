@@ -168,10 +168,6 @@ public class MainHomeDeviceFragment extends Fragment {
         return view;
     }
 
-    private void setIssues(){
-
-    }
-
     private void centerMyLocation(){
         MyLocationData locationData = mMapView.getMap().getLocationData();
         if(locationData == null)

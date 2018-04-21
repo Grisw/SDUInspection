@@ -30,6 +30,12 @@ import pers.lxt.sduinspection.util.ResponseCode;
 
 public class MainHomeDevicesFragment extends Fragment {
 
+    private List<Device> devices;
+
+    public List<Device> getDevices() {
+        return devices;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_home_devices, container, false);
@@ -39,6 +45,13 @@ public class MainHomeDevicesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ((MainActivity)getActivity()).back();
+            }
+        });
+
+        view.findViewById(R.id.toolbar_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).changeFragment(MainHomeCreateDeviceFragment.class, null, false, MainHomeDevicesFragment.this);
             }
         });
 
@@ -55,6 +68,12 @@ public class MainHomeDevicesFragment extends Fragment {
         RecyclerView recyclerView = Objects.requireNonNull(getView()).findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(new DeviceAdapter(this, devices));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateTaskList(devices);
     }
 
     public static class GetDevicesTask extends AsyncTask<Void, Void, Response<List<Device>>> {
@@ -104,6 +123,7 @@ public class MainHomeDevicesFragment extends Fragment {
             } else {
                 switch (response.getCode()){
                     case ResponseCode.SUCCESS:
+                        fragment.devices = response.getObject();
                         fragment.updateTaskList(response.getObject());
                         break;
                     case ResponseCode.TOKEN_EXPIRED:

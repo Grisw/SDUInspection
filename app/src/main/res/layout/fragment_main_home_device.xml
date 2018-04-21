@@ -13,9 +13,7 @@
         android:background="#55FFFFFF"
         android:layout_marginTop="?android:attr/actionBarSize"
         android:elevation="3dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:padding="10dp"
         android:scrollbars="none">
 
         <com.zhy.android.percent.support.PercentLinearLayout

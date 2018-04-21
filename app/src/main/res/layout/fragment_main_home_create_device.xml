@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhy.android.percent.support.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/splash">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#55FFFFFF"
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:elevation="3dp"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/create_button"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_device"/>
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/create_button"
+            android:layout_marginBottom="10dp"
+            android:scrollbars="none">
+
+            <com.zhy.android.percent.support.PercentLinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="5dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="5dp"
+                    android:layout_marginTop="@dimen/activity_vertical_margin">
+
+                    <com.zhy.android.percent.support.PercentLinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:orientation="vertical"
+                        android:background="?android:selectableItemBackground">
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <EditText
+                                android:id="@+id/title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/device_name"
+                                android:inputType="text"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:textSize="15sp"/>
+
+                        </android.support.design.widget.TextInputLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <EditText
+                                android:id="@+id/description"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/device_desc"
+                                android:inputType="text"
+                                android:textSize="15sp"/>
+
+                        </android.support.design.widget.TextInputLayout>
+
+                    </com.zhy.android.percent.support.PercentLinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="5dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="5dp"
+                    android:layout_marginTop="@dimen/activity_vertical_margin">
+
+                    <com.zhy.android.percent.support.PercentLinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:orientation="vertical"
+                        android:background="?android:selectableItemBackground">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"
+                            android:text="@string/prompt_position"/>
+
+                        <com.zhy.android.percent.support.PercentRelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            app:layout_heightPercent="60%w"
+                            android:layout_marginTop="5dp">
+
+                            <com.baidu.mapapi.map.TextureMapView
+                                android:id="@+id/bmapView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <ImageButton
+                                android:id="@+id/position_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_gps"
+                                android:padding="12dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentEnd="true"
+                                app:layout_marginEndPercent="5%w"
+                                app:layout_marginBottomPercent="5%w"
+                                android:contentDescription="@string/imageDescription"/>
+
+                            <View
+                                android:id="@+id/_center"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_centerInParent="true"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_place"
+                                android:layout_centerHorizontal="true"
+                                android:layout_above="@id/_center"
+                                android:contentDescription="@string/imageDescription" />
+
+                        </com.zhy.android.percent.support.PercentRelativeLayout>
+
+                    </com.zhy.android.percent.support.PercentLinearLayout>
+                </android.support.v7.widget.CardView>
+
+            </com.zhy.android.percent.support.PercentLinearLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="@string/create_device"
+        app:titleTextColor="@android:color/white">
+
+    </android.support.v7.widget.Toolbar>
+
+</com.zhy.android.percent.support.PercentRelativeLayout>

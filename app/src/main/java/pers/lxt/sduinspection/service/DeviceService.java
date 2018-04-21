@@ -8,6 +8,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -128,4 +129,67 @@ public class DeviceService {
 
         return response;
     }
+
+    public Response<Integer> createDevice(Device device, String pn, String token) throws InterruptedException, ServiceException, JSONException {
+        JSONObject body = new JSONObject();
+        body.put("name", device.getName());
+        body.put("description", device.getDescription());
+        body.put("longitude", device.getLongitude());
+        body.put("latitude", device.getLatitude());
+
+        final Response<Integer> response = new Response<>();
+        final ServiceException exception = new ServiceException();
+        RestRequest request = new RestRequest(
+                Request.Method.PUT,
+                Urls.DEVICE,
+                body,
+                pn,
+                token,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject s) {
+                        try {
+                            response.setCode(s.getInt("code"));
+                            response.setMessage(s.getString("message"));
+                            if(!s.isNull("body")){
+                                response.setObject(s.getInt("body"));
+                            }
+                        } catch (Exception e) {
+                            exception.initCause(e);
+                        }
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        exception.initCause(volleyError);
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                });
+
+        // Add to request queue.
+        requestQueue.add(request);
+
+        // Wait response.
+        synchronized (response){
+            response.wait();
+        }
+
+        // Throw ServiceException if error occurred while requesting.
+        if(exception.getCause() != null){
+            throw exception;
+        }
+
+        return response;
+    }
+
 }
