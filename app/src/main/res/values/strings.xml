@@ -76,4 +76,11 @@
     <string name="device_name">设备名称</string>
     <string name="device_desc">设备描述</string>
     <string name="device_name_nonnull">设备名称不能为空</string>
+    <string name="me">个人信息</string>
+    <string name="name">姓名</string>
+    <string name="sex">性别</string>
+    <string name="change_password">修改密码</string>
+    <string name="leader">上级</string>
+    <string name="logout">注销</string>
+    <string name="unwrote">未填写</string>
 </resources>

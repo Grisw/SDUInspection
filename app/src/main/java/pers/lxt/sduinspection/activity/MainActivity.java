@@ -16,6 +16,7 @@ import com.baidu.mapapi.SDKInitializer;
 
 import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.fragment.MainHomeFragment;
+import pers.lxt.sduinspection.fragment.MainMeFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
                     to = null;
                     break;
                 case R.id.navigation_me:
-                    to = null;
+                    to = MainMeFragment.class;
                     break;
             }
             if(to == null){

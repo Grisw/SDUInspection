@@ -103,7 +103,7 @@ public class MainHomeIssueFragment extends Fragment {
     }
 
     public void finish(){
-        Toast.makeText(getActivity(), "Issue已关闭：" + issue.getId(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "问题已关闭：" + issue.getId(), Toast.LENGTH_SHORT).show();
         TaskDevice taskDevice = ((MainHomeTaskDeviceFragment) getTargetFragment()).getTaskDevice();
         if(taskDevice.getIssues() == null)
             taskDevice.setIssues(new ArrayList<Issue>());

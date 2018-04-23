@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import pers.lxt.sduinspection.model.Response;
+import pers.lxt.sduinspection.model.RestRequest;
 import pers.lxt.sduinspection.model.ServiceException;
 import pers.lxt.sduinspection.model.Urls;
 import pers.lxt.sduinspection.util.MD5Utils;
@@ -72,6 +73,58 @@ public class TokenService {
                             response.setMessage(s.getString("message"));
                             response.setObject(s.getString("body"));
                         } catch (JSONException e) {
+                            exception.initCause(e);
+                        }
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        exception.initCause(volleyError);
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                });
+
+        // Add to request queue.
+        requestQueue.add(request);
+
+        // Wait response.
+        synchronized (response){
+            response.wait();
+        }
+
+        // Throw ServiceException if error occurred while requesting.
+        if(exception.getCause() != null){
+            throw exception;
+        }
+
+        return response;
+    }
+
+    public Response<Void> deleteToken(String pn, String token) throws InterruptedException, ServiceException {
+        final Response<Void> response = new Response<>();
+        final ServiceException exception = new ServiceException();
+        RestRequest request = new RestRequest(
+                Request.Method.DELETE,
+                Urls.TOKEN,
+                pn,
+                token,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject s) {
+                        try {
+                            response.setCode(s.getInt("code"));
+                            response.setMessage(s.getString("message"));
+                        } catch (Exception e) {
                             exception.initCause(e);
                         }
 
