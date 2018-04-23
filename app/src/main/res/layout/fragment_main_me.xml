@@ -31,6 +31,7 @@
                 android:layout_centerInParent="true"
                 android:textStyle="bold"
                 android:textColor="@android:color/white"
+                android:elevation="10dp"
                 android:textSize="38sp"/>
         </RelativeLayout>
 
@@ -151,6 +152,7 @@
                         android:background="#999999"/>
 
                     <LinearLayout
+                        android:id="@+id/change_password"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         app:layout_widthPercent="30%w"
@@ -218,6 +220,7 @@
                         android:background="#999999"/>
 
                     <LinearLayout
+                        android:id="@+id/email_btn"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         app:layout_widthPercent="70%w"

@@ -44,7 +44,7 @@ public class MainMeFragment extends Fragment {
         return view;
     }
 
-    private void init(View view, User user){
+    private void init(View view, final User user){
         ((TextView) view.findViewById(R.id.cap)).setText(user.getName().substring(0, 1).toUpperCase());
         ((TextView) view.findViewById(R.id.name)).setText(user.getName());
         ((TextView) view.findViewById(R.id.sex)).setText(user.getSex().getSex(getActivity()));
@@ -71,7 +71,25 @@ public class MainMeFragment extends Fragment {
             }
         });
 
+        view.findViewById(R.id.change_password).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).changeFragment(MainMePasswordFragment.class, null, false, null);
+            }
+        });
 
+        view.findViewById(R.id.email_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("email", user.getEmail());
+                ((MainActivity) getActivity()).changeFragment(MainMeEmailFragment.class, bundle, false, MainMeFragment.this);
+            }
+        });
+    }
+
+    public void updateUserEmail(String email){
+        UserService.getInstance(getActivity()).getCurrentUser().setEmail(email);
     }
 
     public static class LogoutTask extends AsyncTask<Void, Void, Response<Void>> {

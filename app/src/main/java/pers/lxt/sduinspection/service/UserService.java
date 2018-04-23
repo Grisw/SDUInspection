@@ -199,6 +199,61 @@ public class UserService {
         return response;
     }
 
+    public Response<Void> changeEmail(String email, String pn, String token) throws InterruptedException, JSONException, ServiceException {
+        JSONObject requestParam = new JSONObject();
+        requestParam.put("email", email);
+
+        final Response<Void> response = new Response<>();
+        final ServiceException exception = new ServiceException();
+        RestRequest request = new RestRequest(
+                Request.Method.POST,
+                Urls.USER_EMAIL,
+                requestParam,
+                pn, token,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject s) {
+                        try {
+                            response.setCode(s.getInt("code"));
+                            response.setMessage(s.getString("message"));
+                        } catch (JSONException e) {
+                            exception.initCause(e);
+                        }
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        exception.initCause(volleyError);
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                });
+
+        // Add to request queue.
+        requestQueue.add(request);
+
+        // Wait response.
+        synchronized (response){
+            response.wait();
+        }
+
+        // Throw ServiceException if error occurred while requesting.
+        if(exception.getCause() != null){
+            throw exception;
+        }
+
+        return response;
+    }
+
     public User getCurrentUser() {
         return currentUser;
     }

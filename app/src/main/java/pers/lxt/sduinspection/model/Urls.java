@@ -21,6 +21,11 @@ public class Urls {
     public static final String TOKEN = HOST + "/token";
 
     /**
+     * Token Password Service
+     */
+    public static final String TOKEN_PWD = TOKEN + "/password";
+
+    /**
      * User Service
      */
     public static final String USER = HOST + "/user";
@@ -29,6 +34,11 @@ public class Urls {
      * Get Junior User Service
      */
     public static final String USER_JUNIOR = USER + "/junior";
+
+    /**
+     * Get Email User Service
+     */
+    public static final String USER_EMAIL = USER + "/email";
 
     /**
      * Task Service

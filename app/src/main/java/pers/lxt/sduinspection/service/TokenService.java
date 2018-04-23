@@ -110,6 +110,62 @@ public class TokenService {
         return response;
     }
 
+    public Response<Void> changePassword(String password, String oldPassword, String pn, String token) throws InterruptedException, JSONException, ServiceException {
+        JSONObject requestParam = new JSONObject();
+        requestParam.put("password", MD5Utils.getMD5(password));
+        requestParam.put("oldPassword", MD5Utils.getMD5(oldPassword));
+
+        final Response<Void> response = new Response<>();
+        final ServiceException exception = new ServiceException();
+        RestRequest request = new RestRequest(
+                Request.Method.POST,
+                Urls.TOKEN_PWD,
+                requestParam,
+                pn, token,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject s) {
+                        try {
+                            response.setCode(s.getInt("code"));
+                            response.setMessage(s.getString("message"));
+                        } catch (JSONException e) {
+                            exception.initCause(e);
+                        }
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        exception.initCause(volleyError);
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                });
+
+        // Add to request queue.
+        requestQueue.add(request);
+
+        // Wait response.
+        synchronized (response){
+            response.wait();
+        }
+
+        // Throw ServiceException if error occurred while requesting.
+        if(exception.getCause() != null){
+            throw exception;
+        }
+
+        return response;
+    }
+
     public Response<Void> deleteToken(String pn, String token) throws InterruptedException, ServiceException {
         final Response<Void> response = new Response<>();
         final ServiceException exception = new ServiceException();
