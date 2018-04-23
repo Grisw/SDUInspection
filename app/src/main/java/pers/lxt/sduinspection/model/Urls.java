@@ -41,6 +41,11 @@ public class Urls {
     public static final String USER_EMAIL = USER + "/email";
 
     /**
+     * Get Email User Service
+     */
+    public static final String USER_BIRTHDAY = USER + "/birthday";
+
+    /**
      * Task Service
      */
     public static final String TASK = HOST + "/task";

@@ -13,6 +13,8 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -97,7 +99,12 @@ public class MainMeFragment extends Fragment {
                         Calendar current = Calendar.getInstance();
                         current.clear();
                         current.set(year, month, date);
-                        updateUserBirthday(current.getTime());
+
+                        ChangeBirthdayTask task = new ChangeBirthdayTask(
+                                current.getTime(),
+                                TokenService.getInstance(getActivity()).getPhone(),
+                                TokenService.getInstance(getActivity()).getToken(), MainMeFragment.this);
+                        task.execute((Void) null);
                     }
                 }, current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH)).show();
             }
@@ -169,6 +176,77 @@ public class MainMeFragment extends Fragment {
                     default:
                         Toast.makeText(fragment.getActivity(), R.string.error_unknown, Toast.LENGTH_LONG).show();
                         Log.e(LogoutTask.class.getName(),
+                                "Unknown code: " + response.getCode() + ", message: " + response.getMessage());
+                        break;
+                }
+            }
+        }
+    }
+
+    public static class ChangeBirthdayTask extends AsyncTask<Void, Void, Response<Void>> {
+
+        private WeakReference<MainMeFragment> fragmentReference;
+
+        private final String mPhone;
+        private final String mToken;
+        private final Date mBirthday;
+
+        ChangeBirthdayTask(Date birthday, String phone, String token, MainMeFragment fragment) {
+            mPhone = phone;
+            mToken = token;
+            mBirthday = birthday;
+            this.fragmentReference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected Response<Void> doInBackground(Void... params) {
+            MainMeFragment fragment = fragmentReference.get();
+
+            if(fragment == null || fragment.isRemoving() || fragment.getActivity() == null || fragment.getActivity().isFinishing())
+                return null;
+
+            try {
+                return UserService.getInstance(fragment.getActivity()).changeBirthday(
+                        mBirthday,
+                        mPhone,
+                        mToken
+                );
+            } catch (InterruptedException ignore) {
+                return null;
+            } catch (ServiceException e) {
+                Log.e(ChangeBirthdayTask.class.getName(), e.getCause().getMessage(), e);
+                return new Response<>(e.getCause());
+            } catch (JSONException e) {
+                Log.e(ChangeBirthdayTask.class.getName(), e.getMessage(), e);
+                return new Response<>(e);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Response<Void> response) {
+            if (response == null) return;
+
+            MainMeFragment fragment = fragmentReference.get();
+
+            if(fragment == null || fragment.isRemoving() || fragment.getActivity() == null || fragment.getActivity().isFinishing())
+                return;
+
+            if (response.getException() != null) {
+                Toast.makeText(fragment.getActivity(), R.string.error_unknown, Toast.LENGTH_LONG).show();
+            } else {
+                switch (response.getCode()){
+                    case ResponseCode.SUCCESS:
+                        Toast.makeText(fragment.getActivity(), R.string.prompt_edit_success, Toast.LENGTH_SHORT).show();
+                        fragment.updateUserBirthday(mBirthday);
+                        break;
+                    case ResponseCode.TOKEN_EXPIRED:
+                        Toast.makeText(fragment.getActivity(), R.string.prompt_login_again, Toast.LENGTH_LONG).show();
+                        fragment.startActivity(new Intent(fragment.getActivity(), SplashActivity.class));
+                        fragment.getActivity().finish();
+                        break;
+                    default:
+                        Toast.makeText(fragment.getActivity(), R.string.error_unknown, Toast.LENGTH_LONG).show();
+                        Log.e(ChangeBirthdayTask.class.getName(),
                                 "Unknown code: " + response.getCode() + ", message: " + response.getMessage());
                         break;
                 }
