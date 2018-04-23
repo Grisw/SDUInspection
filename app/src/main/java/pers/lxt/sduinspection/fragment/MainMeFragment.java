@@ -1,34 +1,31 @@
 package pers.lxt.sduinspection.fragment;
 
+import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.activity.MainActivity;
 import pers.lxt.sduinspection.activity.SplashActivity;
 import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.ServiceException;
-import pers.lxt.sduinspection.model.Task;
 import pers.lxt.sduinspection.model.User;
-import pers.lxt.sduinspection.service.TaskService;
 import pers.lxt.sduinspection.service.TokenService;
 import pers.lxt.sduinspection.service.UserService;
 import pers.lxt.sduinspection.util.ResponseCode;
@@ -44,7 +41,7 @@ public class MainMeFragment extends Fragment {
         return view;
     }
 
-    private void init(View view, final User user){
+    private void init(View view, User user){
         ((TextView) view.findViewById(R.id.cap)).setText(user.getName().substring(0, 1).toUpperCase());
         ((TextView) view.findViewById(R.id.name)).setText(user.getName());
         ((TextView) view.findViewById(R.id.sex)).setText(user.getSex().getSex(getActivity()));
@@ -82,14 +79,40 @@ public class MainMeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString("email", user.getEmail());
+                bundle.putString("email", UserService.getInstance(getActivity()).getCurrentUser().getEmail());
                 ((MainActivity) getActivity()).changeFragment(MainMeEmailFragment.class, bundle, false, MainMeFragment.this);
+            }
+        });
+
+        view.findViewById(R.id.birthday_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar current = Calendar.getInstance();
+                if(UserService.getInstance(getActivity()).getCurrentUser().getBirthday() != null){
+                    current.setTime(UserService.getInstance(getActivity()).getCurrentUser().getBirthday());
+                }
+                new DatePickerDialog(getActivity(), 0, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, final int year, final int month, final int date) {
+                        Calendar current = Calendar.getInstance();
+                        current.clear();
+                        current.set(year, month, date);
+                        updateUserBirthday(current.getTime());
+                    }
+                }, current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
     }
 
     public void updateUserEmail(String email){
         UserService.getInstance(getActivity()).getCurrentUser().setEmail(email);
+        ((TextView) Objects.requireNonNull(getView()).findViewById(R.id.email)).setText(email);
+    }
+
+    public void updateUserBirthday(Date date){
+        UserService.getInstance(getActivity()).getCurrentUser().setBirthday(date);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日", Locale.getDefault());
+        ((TextView) Objects.requireNonNull(getView()).findViewById(R.id.create_task_due)).setText(format.format(date));
     }
 
     public static class LogoutTask extends AsyncTask<Void, Void, Response<Void>> {
