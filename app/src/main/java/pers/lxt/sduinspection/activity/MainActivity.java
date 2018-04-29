@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.baidu.mapapi.SDKInitializer;
 
 import pers.lxt.sduinspection.R;
+import pers.lxt.sduinspection.fragment.MainMembersFragment;
 import pers.lxt.sduinspection.fragment.MainHomeFragment;
 import pers.lxt.sduinspection.fragment.MainMeFragment;
 
@@ -30,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     to = MainHomeFragment.class;
                     break;
-                case R.id.navigation_contacts:
-                    to = null;
+                case R.id.navigation_members:
+                    to = MainMembersFragment.class;
                     break;
                 case R.id.navigation_me:
                     to = MainMeFragment.class;
@@ -89,18 +90,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    private void initContacts(){
+//    private void initMembers(){
 //        User user = (User) mInitializeData.getSerializable("user");
 //        @SuppressWarnings("unchecked")
-//        List<Map<String, String>> contacts = (List<Map<String, String>>) mInitializeData.getSerializable("contacts");
+//        List<Map<String, String>> members = (List<Map<String, String>>) mInitializeData.getSerializable("members");
 //
-//        Toolbar toolbar = vContacts.findViewById(R.id.toolbar);
+//        Toolbar toolbar = vMembers.findViewById(R.id.toolbar);
 //        toolbar.setTitle(user != null ? user.getName() : "");
 //
-//        RecyclerView contactsRecyclerView = vContacts.findViewById(R.id.contacts_view);
-//        contactsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        contactsRecyclerView.setAdapter(new ContactAdapter(contacts));
-//        contactsRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+//        RecyclerView membersRecyclerView = vMembers.findViewById(R.id.members_view);
+//        membersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        membersRecyclerView.setAdapter(new MemberAdapter(members));
+//        membersRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 //    }
 
     private long mExitTime = 0;

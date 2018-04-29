@@ -77,7 +77,11 @@ public class UserService {
                                 }else{
                                     user.setBirthday(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(jsonObject.getString("birthday")));
                                 }
-                                user.setEmail(jsonObject.getString("email"));
+                                if(jsonObject.isNull("email")){
+                                    user.setEmail(null);
+                                }else{
+                                    user.setEmail(jsonObject.getString("email"));
+                                }
                                 user.setLeader(jsonObject.getString("leader"));
                                 user.setName(jsonObject.getString("name"));
                                 user.setPhoneNumber(jsonObject.getString("phoneNumber"));
@@ -263,7 +267,7 @@ public class UserService {
         final ServiceException exception = new ServiceException();
         RestRequest request = new RestRequest(
                 Request.Method.POST,
-                Urls.USER_EMAIL,
+                Urls.USER_BIRTHDAY,
                 requestParam,
                 pn, token,
                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -273,6 +277,70 @@ public class UserService {
                             response.setCode(s.getInt("code"));
                             response.setMessage(s.getString("message"));
                         } catch (JSONException e) {
+                            exception.initCause(e);
+                        }
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        exception.initCause(volleyError);
+
+                        // Wake up main Thread.
+                        synchronized (response){
+                            response.notify();
+                        }
+                    }
+                });
+
+        // Add to request queue.
+        requestQueue.add(request);
+
+        // Wait response.
+        synchronized (response){
+            response.wait();
+        }
+
+        // Throw ServiceException if error occurred while requesting.
+        if(exception.getCause() != null){
+            throw exception;
+        }
+
+        return response;
+    }
+
+    public Response<Void> createUser(User user, String pn, String token) throws InterruptedException, ServiceException, JSONException {
+        JSONObject body = new JSONObject();
+        body.put("name", user.getName());
+        body.put("phone", user.getPhoneNumber());
+        body.put("email", user.getEmail());
+        body.put("sex", user.getSex());
+        if(user.getBirthday() == null){
+            body.put("birthday", null);
+        }else{
+            body.put("birthday", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(user.getBirthday()));
+        }
+
+        final Response<Void> response = new Response<>();
+        final ServiceException exception = new ServiceException();
+        RestRequest request = new RestRequest(
+                Request.Method.PUT,
+                Urls.USER,
+                body,
+                pn,
+                token,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject s) {
+                        try {
+                            response.setCode(s.getInt("code"));
+                            response.setMessage(s.getString("message"));
+                        } catch (Exception e) {
                             exception.initCause(e);
                         }
 

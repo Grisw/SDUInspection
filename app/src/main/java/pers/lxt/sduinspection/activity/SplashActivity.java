@@ -30,8 +30,6 @@ import java.util.Set;
 import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.ServiceException;
-import pers.lxt.sduinspection.model.Task;
-import pers.lxt.sduinspection.service.ContactService;
 import pers.lxt.sduinspection.service.TaskService;
 import pers.lxt.sduinspection.service.TokenService;
 import pers.lxt.sduinspection.service.UserService;

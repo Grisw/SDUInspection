@@ -4,115 +4,109 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import org.json.JSONException;
-
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.Objects;
 
 import pers.lxt.sduinspection.R;
 import pers.lxt.sduinspection.activity.MainActivity;
 import pers.lxt.sduinspection.activity.SplashActivity;
+import pers.lxt.sduinspection.adapter.MemberAdapter;
+import pers.lxt.sduinspection.adapter.DeviceAdapter;
+import pers.lxt.sduinspection.model.Device;
 import pers.lxt.sduinspection.model.Response;
 import pers.lxt.sduinspection.model.ServiceException;
+import pers.lxt.sduinspection.model.User;
+import pers.lxt.sduinspection.service.DeviceService;
 import pers.lxt.sduinspection.service.TokenService;
 import pers.lxt.sduinspection.service.UserService;
 import pers.lxt.sduinspection.util.ResponseCode;
 
-public class MainMeEmailFragment extends Fragment {
+public class MainMembersFragment extends Fragment {
+
+    private List<User> users;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main_me_email, container, false);
+        View view = inflater.inflate(R.layout.fragment_main_members, container, false);
 
-        String email = getArguments().getString("email");
-
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.toolbar_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).back();
+                ((MainActivity) getActivity()).changeFragment(MainMembersAddMemberFragment.class, null, false, MainMembersFragment.this);
             }
         });
 
-        if(email != null){
-            ((EditText) view.findViewById(R.id.email)).setText(email);
-        }
+        GetJuniorTask task = new GetJuniorTask(
+                TokenService.getInstance(getActivity()).getPhone(),
+                TokenService.getInstance(getActivity()).getToken(),
+                this);
+        task.execute((Void) null);
 
-        view.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EditText email_view = Objects.requireNonNull(getView()).findViewById(R.id.email);
-
-                String email = email_view.getText().toString();
-                if(!email.matches("^[\\w-_.+]*[\\w-_.]@([\\w]+\\.)+[\\w]+[\\w]$")){
-                    email_view.setError(getString(R.string.email_invalid));
-                    email_view.requestFocus();
-                    return;
-                }
-
-                ChangeEmailTask task = new ChangeEmailTask(
-                        email,
-                        TokenService.getInstance(getActivity()).getPhone(),
-                        TokenService.getInstance(getActivity()).getToken(),
-                        MainMeEmailFragment.this);
-                task.execute((Void) null);
-            }
-        });
         return view;
     }
 
-    public static class ChangeEmailTask extends AsyncTask<Void, Void, Response<Void>> {
+    private void updateTaskList(List<User> users){
+        this.users = users;
+        RecyclerView recyclerView = Objects.requireNonNull(getView()).findViewById(R.id.recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(new MemberAdapter(this, users));
+    }
 
-        private WeakReference<MainMeEmailFragment> fragmentReference;
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateTaskList(users);
+    }
+
+    public static class GetJuniorTask extends AsyncTask<Void, Void, Response<List<User>>> {
+
+        private WeakReference<MainMembersFragment> fragmentReference;
 
         private final String mPhone;
         private final String mToken;
-        private final String mEmail;
 
-        ChangeEmailTask(String email, String phone, String token, MainMeEmailFragment fragment) {
+        GetJuniorTask(String phone, String token, MainMembersFragment fragment) {
             mPhone = phone;
             mToken = token;
-            mEmail = email;
             this.fragmentReference = new WeakReference<>(fragment);
         }
 
         @Override
-        protected Response<Void> doInBackground(Void... params) {
-            MainMeEmailFragment fragment = fragmentReference.get();
+        protected Response<List<User>> doInBackground(Void... params) {
+            MainMembersFragment fragment = fragmentReference.get();
 
             if(fragment == null || fragment.isRemoving() || fragment.getActivity() == null || fragment.getActivity().isFinishing())
                 return null;
 
             try {
-                return UserService.getInstance(fragment.getActivity()).changeEmail(
-                        mEmail,
+                return UserService.getInstance(fragment.getActivity()).getJunior(
+                        mPhone,
                         mPhone,
                         mToken
                 );
             } catch (InterruptedException ignore) {
                 return null;
             } catch (ServiceException e) {
-                Log.e(ChangeEmailTask.class.getName(), e.getCause().getMessage(), e);
+                Log.e(GetJuniorTask.class.getName(), e.getCause().getMessage(), e);
                 return new Response<>(e.getCause());
-            } catch (JSONException e) {
-                Log.e(ChangeEmailTask.class.getName(), e.getMessage(), e);
-                return new Response<>(e);
             }
         }
 
         @Override
-        protected void onPostExecute(Response<Void> response) {
+        protected void onPostExecute(Response<List<User>> response) {
             if (response == null) return;
 
-            MainMeEmailFragment fragment = fragmentReference.get();
+            MainMembersFragment fragment = fragmentReference.get();
 
             if(fragment == null || fragment.isRemoving() || fragment.getActivity() == null || fragment.getActivity().isFinishing())
                 return;
@@ -122,9 +116,7 @@ public class MainMeEmailFragment extends Fragment {
             } else {
                 switch (response.getCode()){
                     case ResponseCode.SUCCESS:
-                        Toast.makeText(fragment.getActivity(), R.string.prompt_edit_success, Toast.LENGTH_SHORT).show();
-                        UserService.getInstance(fragment.getActivity()).getCurrentUser().setEmail(mEmail);
-                        ((MainActivity) fragment.getActivity()).back();
+                        fragment.updateTaskList(response.getObject());
                         break;
                     case ResponseCode.TOKEN_EXPIRED:
                         Toast.makeText(fragment.getActivity(), R.string.prompt_login_again, Toast.LENGTH_LONG).show();
@@ -133,11 +125,12 @@ public class MainMeEmailFragment extends Fragment {
                         break;
                     default:
                         Toast.makeText(fragment.getActivity(), R.string.error_unknown, Toast.LENGTH_LONG).show();
-                        Log.e(ChangeEmailTask.class.getName(),
+                        Log.e(GetJuniorTask.class.getName(),
                                 "Unknown code: " + response.getCode() + ", message: " + response.getMessage());
                         break;
                 }
             }
         }
     }
+
 }

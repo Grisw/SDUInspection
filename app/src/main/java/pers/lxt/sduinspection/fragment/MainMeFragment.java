@@ -111,15 +111,20 @@ public class MainMeFragment extends Fragment {
         });
     }
 
-    public void updateUserEmail(String email){
-        UserService.getInstance(getActivity()).getCurrentUser().setEmail(email);
-        ((TextView) Objects.requireNonNull(getView()).findViewById(R.id.email)).setText(email);
-    }
-
     public void updateUserBirthday(Date date){
         UserService.getInstance(getActivity()).getCurrentUser().setBirthday(date);
         SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日", Locale.getDefault());
-        ((TextView) Objects.requireNonNull(getView()).findViewById(R.id.create_task_due)).setText(format.format(date));
+        ((TextView) Objects.requireNonNull(getView()).findViewById(R.id.birthday)).setText(format.format(date));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(UserService.getInstance(getActivity()).getCurrentUser().getEmail() != null){
+            ((TextView) Objects.requireNonNull(getView()).findViewById(R.id.email)).setText(UserService.getInstance(getActivity()).getCurrentUser().getEmail());
+        }else{
+            ((TextView) Objects.requireNonNull(getView()).findViewById(R.id.email)).setText(R.string.unwrote);
+        }
     }
 
     public static class LogoutTask extends AsyncTask<Void, Void, Response<Void>> {

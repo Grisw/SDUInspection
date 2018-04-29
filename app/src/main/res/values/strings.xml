@@ -24,7 +24,7 @@
     <!-- main -->
     <string name="title_activity_main">移动巡检</string>
     <string name="title_home">主页</string>
-    <string name="title_contacts">联系人</string>
+    <string name="title_members">人员</string>
     <string name="title_me">我的</string>
     <string name="prompt_press_back">再按一次返回键退出</string>
 
@@ -91,4 +91,8 @@
     <string name="edit_email">修改邮箱</string>
     <string name="email">邮箱</string>
     <string name="email_invalid">邮箱格式不正确</string>
+    <string name="add_member">添加人员</string>
+    <string name="birthday">出生日期</string>
+    <string name="name_too_long">名字长度过长</string>
+    <string name="user_exists">手机号已被注册</string>
 </resources>
