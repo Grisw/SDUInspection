@@ -9,6 +9,7 @@ import java.util.List;
 import pers.lxt.sduinspection.R;
 
 public class Task implements Serializable {
+
     public enum State{
         T(R.string.prompt_waiting),
         D(R.string.prompt_executing),
@@ -35,6 +36,8 @@ public class Task implements Serializable {
     private String creatorName;
     private String assigneeName;
     private List<TaskDevice> devices;
+    private Date startTime;
+    private Date endTime;
 
     public int getId() {
         return id;
@@ -123,4 +126,21 @@ public class Task implements Serializable {
     public void setDevices(List<TaskDevice> devices) {
         this.devices = devices;
     }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
 }

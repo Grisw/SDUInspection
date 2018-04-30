@@ -155,6 +155,11 @@ public class UserService {
                                     }else{
                                         user.setBirthday(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(jsonObject.getString("birthday")));
                                     }
+                                    if(jsonObject.isNull("email")){
+                                        user.setEmail(null);
+                                    }else{
+                                        user.setEmail(jsonObject.getString("email"));
+                                    }
                                     user.setEmail(jsonObject.getString("email"));
                                     user.setLeader(jsonObject.getString("leader"));
                                     user.setName(jsonObject.getString("name"));

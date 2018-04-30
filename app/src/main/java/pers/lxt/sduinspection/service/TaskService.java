@@ -90,6 +90,16 @@ public class TaskService {
                                     task.setTitle(jsonObject.getString("title"));
                                     task.setCreatorName(jsonObject.getString("creatorName"));
                                     task.setAssigneeName(jsonObject.getString("assigneeName"));
+                                    if(jsonObject.isNull("startTime")){
+                                        task.setStartTime(null);
+                                    }else{
+                                        task.setStartTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(jsonObject.getString("startTime")));
+                                    }
+                                    if(jsonObject.isNull("endTime")){
+                                        task.setEndTime(null);
+                                    }else{
+                                        task.setEndTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse(jsonObject.getString("endTime")));
+                                    }
 
                                     JSONArray devicesArray = jsonObject.getJSONArray("devices");
                                     List<TaskDevice> taskDevices = new ArrayList<>();

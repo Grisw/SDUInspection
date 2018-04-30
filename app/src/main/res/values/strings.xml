@@ -102,4 +102,5 @@
     <string name="prompt_doing">正在执行：</string>
     <string name="prompt_leader">上级：</string>
     <string name="call">拨打电话</string>
+    <string name="prompt_trace">轨迹：</string>
 </resources>

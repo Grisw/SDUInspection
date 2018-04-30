@@ -77,9 +77,9 @@ public class MainMembersInfoFragment extends Fragment {
         ((TextView)view.findViewById(R.id.phone)).setText(user.getPhoneNumber());
         ((TextView)view.findViewById(R.id.sex)).setText(user.getSex().getSex(getActivity()));
         if(user.getEmail() != null){
-            ((TextView) Objects.requireNonNull(getView()).findViewById(R.id.email)).setText(user.getEmail());
+            ((TextView) view.findViewById(R.id.email)).setText(user.getEmail());
         }else{
-            ((TextView) Objects.requireNonNull(getView()).findViewById(R.id.email)).setText(R.string.unwrote);
+            ((TextView) view.findViewById(R.id.email)).setText(R.string.unwrote);
         }
         if(user.getBirthday() != null){
             SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日", Locale.getDefault());

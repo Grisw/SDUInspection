@@ -22,6 +22,7 @@
             android:text="@string/prompt_start_exe"/>
 
         <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/change_state_button"
@@ -90,6 +91,57 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginTop="5dp"/>
+
+                    </com.zhy.android.percent.support.PercentLinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="5dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="5dp"
+                    android:layout_marginTop="@dimen/activity_vertical_margin">
+
+                    <com.zhy.android.percent.support.PercentLinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:orientation="vertical"
+                        android:background="?android:selectableItemBackground">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"
+                            android:text="@string/prompt_trace"/>
+
+                        <com.zhy.android.percent.support.PercentRelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            app:layout_heightPercent="60%w"
+                            android:layout_marginTop="5dp">
+
+                            <com.baidu.mapapi.map.TextureMapView
+                                android:id="@+id/bmapView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <ImageButton
+                                android:id="@+id/position_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_gps"
+                                android:padding="12dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentEnd="true"
+                                app:layout_marginEndPercent="5%w"
+                                app:layout_marginBottomPercent="5%w"
+                                android:contentDescription="@string/imageDescription" />
+
+                        </com.zhy.android.percent.support.PercentRelativeLayout>
 
                     </com.zhy.android.percent.support.PercentLinearLayout>
                 </android.support.v7.widget.CardView>
