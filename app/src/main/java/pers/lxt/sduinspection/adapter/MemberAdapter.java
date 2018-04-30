@@ -12,7 +12,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import pers.lxt.sduinspection.R;
+import pers.lxt.sduinspection.activity.MainActivity;
 import pers.lxt.sduinspection.fragment.MainMembersFragment;
+import pers.lxt.sduinspection.fragment.MainMembersInfoFragment;
 import pers.lxt.sduinspection.model.User;
 
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder> {
@@ -41,7 +43,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("user", user);
-                //TODO((MainActivity) mFragment.getActivity()).changeFragment(MainHomeDeviceFragment.class, bundle, false, null);
+                ((MainActivity) mFragment.getActivity()).changeFragment(MainMembersInfoFragment.class, bundle, false, null);
             }
         });
     }

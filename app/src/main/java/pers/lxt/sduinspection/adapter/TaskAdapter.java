@@ -1,5 +1,6 @@
 package pers.lxt.sduinspection.adapter;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,9 +22,9 @@ import pers.lxt.sduinspection.model.Task;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     private List<Task> mTasks;
-    private MainHomeTasksFragment mFragment;
+    private Fragment mFragment;
 
-    public TaskAdapter(MainHomeTasksFragment fragment, List<Task> tasks){
+    public TaskAdapter(Fragment fragment, List<Task> tasks){
         mTasks = tasks;
         mFragment = fragment;
     }

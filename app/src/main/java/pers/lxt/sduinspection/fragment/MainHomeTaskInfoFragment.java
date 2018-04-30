@@ -34,6 +34,7 @@ import pers.lxt.sduinspection.model.Task;
 import pers.lxt.sduinspection.model.TaskDevice;
 import pers.lxt.sduinspection.service.TaskService;
 import pers.lxt.sduinspection.service.TokenService;
+import pers.lxt.sduinspection.service.UserService;
 import pers.lxt.sduinspection.util.ResponseCode;
 
 public class MainHomeTaskInfoFragment extends Fragment {
@@ -70,45 +71,49 @@ public class MainHomeTaskInfoFragment extends Fragment {
         View view = Objects.requireNonNull(getView());
 
         Button button = view.findViewById(R.id.change_state_button);
-        switch (task.getState()){
-            case T:
-                button.setText(R.string.prompt_start_exe);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mUpdateTaskTask = new UpdateTaskTask(
-                                TokenService.getInstance(getActivity()).getPhone(),
-                                TokenService.getInstance(getActivity()).getToken(),
-                                task, Task.State.D, MainHomeTaskInfoFragment.this
-                        );
-                        mUpdateTaskTask.execute((Void) null);
-                    }
-                });
-                break;
-            case D:
-                button.setText(R.string.prompt_finish);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        List<TaskDevice> taskDevices = task.getDevices();
-                        for(TaskDevice taskDevice : taskDevices){
-                            if(!taskDevice.isChecked()){
-                                Toast.makeText(getActivity(), R.string.prompt_please_check_devices, Toast.LENGTH_SHORT).show();
-                                return;
-                            }
+        if (!task.getAssignee().equals(UserService.getInstance(getActivity()).getCurrentUser().getPhoneNumber())) {
+            button.setVisibility(View.GONE);
+        }else {
+            switch (task.getState()){
+                case T:
+                    button.setText(R.string.prompt_start_exe);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mUpdateTaskTask = new UpdateTaskTask(
+                                    TokenService.getInstance(getActivity()).getPhone(),
+                                    TokenService.getInstance(getActivity()).getToken(),
+                                    task, Task.State.D, MainHomeTaskInfoFragment.this
+                            );
+                            mUpdateTaskTask.execute((Void) null);
                         }
-                        mUpdateTaskTask = new UpdateTaskTask(
-                                TokenService.getInstance(getActivity()).getPhone(),
-                                TokenService.getInstance(getActivity()).getToken(),
-                                task, Task.State.E, MainHomeTaskInfoFragment.this
-                        );
-                        mUpdateTaskTask.execute((Void) null);
-                    }
-                });
-                break;
-            case E:
-                button.setVisibility(View.GONE);
-                break;
+                    });
+                    break;
+                case D:
+                    button.setText(R.string.prompt_finish);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            List<TaskDevice> taskDevices = task.getDevices();
+                            for(TaskDevice taskDevice : taskDevices){
+                                if(!taskDevice.isChecked()){
+                                    Toast.makeText(getActivity(), R.string.prompt_please_check_devices, Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+                            mUpdateTaskTask = new UpdateTaskTask(
+                                    TokenService.getInstance(getActivity()).getPhone(),
+                                    TokenService.getInstance(getActivity()).getToken(),
+                                    task, Task.State.E, MainHomeTaskInfoFragment.this
+                            );
+                            mUpdateTaskTask.execute((Void) null);
+                        }
+                    });
+                    break;
+                case E:
+                    button.setVisibility(View.GONE);
+                    break;
+            }
         }
         ((TextView)view.findViewById(R.id.task_info_title)).setText(task.getTitle());
         ((TextView)view.findViewById(R.id.task_info_content)).setText(task.getDescription());
@@ -126,7 +131,7 @@ public class MainHomeTaskInfoFragment extends Fragment {
 
         RecyclerView devicesRecycler = view.findViewById(R.id.task_info_devices);
         devicesRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        devicesRecycler.setAdapter(new TaskDeviceAdapter(this, task.getDevices(), task.getState() == Task.State.D));
+        devicesRecycler.setAdapter(new TaskDeviceAdapter(this, task.getDevices(), task.getState() == Task.State.D && task.getAssignee().equals(UserService.getInstance(getActivity()).getCurrentUser().getPhoneNumber())));
         devicesRecycler.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
     }
 
